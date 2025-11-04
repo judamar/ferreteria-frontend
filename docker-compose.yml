@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: .
+    container_name: ferreteria_frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+# docker-compose up --build -d
