@@ -150,23 +150,23 @@ const NavbarComponent = () => {
           // VISTA USUARIO
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col md:flex-row md:items-center md:gap-6">
-              <Link to='/catalogo' className='py-2 hover:text-gray-200 transition-colors'>
+              <Link to='/catalogo' className='py-2 hover:animate-pulsing transition-transform'>
                 <i className="fa-solid fa-store me-2"/>
                 Catalogo
               </Link>
-              <Link to='/herramientas' className='py-2 hover:text-gray-200 transition-colors'>
+              <Link to='/herramientas' className='py-2 hover:animate-pulsing transition-transform duration-300'>
                 <i className="fa-solid fa-screwdriver-wrench me-2"/>
                 Herramientas
               </Link>
-              <Link to='/sugerencias' className='py-2 hover:text-gray-200 transition-colors'>
+              <Link to='/sugerencias' className='py-2 hover:animate-pulsing transition-transform duration-300'>
                 <i className="fa-solid fa-envelope me-2"/>
                 Sugerencias
               </Link>
-              <Link to='/acerca_de' className='py-2 hover:text-gray-200 transition-colors'>
+              <Link to='/acerca_de' className='py-2 hover:animate-pulsing transition-transform duration-300'>
                 <i className="fa-solid fa-info-circle me-2"/>
                 Acerca de
               </Link>
-              <Link to='/terminos_y_condiciones' className='py-2 hover:text-gray-200 transition-colors'>
+              <Link to='/terminos_y_condiciones' className='py-2 hover:animate-pulsing transition-transform duration-300'>
                 <i className="fa-solid fa-file-contract me-2"/>
                 Términos y condiciones
               </Link>
@@ -174,11 +174,11 @@ const NavbarComponent = () => {
 
             {!authUser ? (
               <div className="flex flex-col md:flex-row md:items-center md:gap-4 mt-4 md:mt-0">
-                <Link to='/login' className='py-2 hover:text-gray-200 transition-colors'>
+                <Link to='/login' className='py-2 hover:animate-pulsing transition-transform duration-300'>
                   <i className="fa-solid fa-sign-in-alt me-2"/>
                   Iniciar Sesion
                 </Link>
-                <Link to='/register' className='py-2 hover:text-gray-200 transition-colors'>
+                <Link to='/register' className='py-2 hover:animate-pulsing transition-transform duration-300'>
                   <i className="fa-solid fa-user-plus me-2"/>
                   Registrarse
                 </Link>
