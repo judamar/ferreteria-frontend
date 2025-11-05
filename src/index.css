@@ -1,7 +1,30 @@
 @import "tailwindcss";
+@tailwind utilities;
+
+@plugin "@midudev/tailwind-animations";
 
 @layer base {
     body {
         @apply bg-gray-100 min-h-screen;
+    }
+
+    .title-h1 {
+        @apply text-4xl md:text-5xl font-bold text-center text-red-700;
+    }
+
+    .title-h2 {
+        @apply text-3xl md:text-4xl font-semibold text-center text-red-700;
+    }
+
+    .title-h3 {
+        @apply text-2xl md:text-3xl font-semibold text-center text-red-700;
+    }
+
+    .title-h4 {
+        @apply text-xl md:text-2xl font-semibold text-center text-red-700;
+    }
+
+    .title-h5 {
+        @apply text-lg md:text-xl font-semibold text-center text-red-700;
     }
 }
