@@ -21,34 +21,34 @@ const NavbarComponent = () => {
   const authUser = storage.get('authUser')
 
   return (
-    <nav className="bg-red-700 text-white">
+    <nav className="bg-red-700 text-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
-          <Link className="flex items-center gap-4" to="/">
+          <Link className="flex items-center gap-4 order-3 md:order-1" to="/">
             <img
-              src={import.meta.VITE_LOGO}
+              src={ENV.LOGO}
               alt="Acá va tu logo"
-              className="w-[75px] h-[75px] rounded-xl shadow-xl"
+              className="w-auto max-h-[80px]"
             />
           </Link>
-          <h1 className="text-2xl md:text-3xl font-bold text-white drop-shadow">
+          <h1 className="text-2xl md:text-3xl font-bold text-white text-shadow-md order-2">
             {ENV.NAME}
           </h1>
+          {/* Botón hamburguesa */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded hover:bg-red-800 transition-colors order-1 md:order-3"
+            aria-label="Toggle navigation"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/>
+              )}
+            </svg>
+          </button>
         </div>
-        {/* Botón hamburguesa */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden p-2 rounded hover:bg-red-800 transition-colors"
-          aria-label="Toggle navigation"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {isMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/>
-            )}
-          </svg>
-        </button>
       </div>
       {/* Menú Desktop y Mobile */}
       <div className={`${isMenuOpen ? 'block' : 'hidden'} md:block mt-4 md:mt-0 text-lg font-bold px-6 pb-2`}>
