@@ -1,19 +1,28 @@
 import React from 'react';
 
-const DivSearch = ({ placeholder, handleChange, value, handleSearchSubmit }) => {
+const DivSearch = ({placeholder, handleChange, value, handleSearchSubmit}) => {
   return (
-    <form className="form-inline d-flex m-3" onSubmit={handleSearchSubmit}>
-      <input
-        className="form-control mr-sm-2 ml-auto"
-        type="search"
-        placeholder={placeholder}
-        aria-label="Search"
-        onChange={handleChange}
-        value={value}
-      />
-      <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
-        Buscar
-      </button>
+    <form className="w-11/12 sm:w-full max-w-4xl mx-auto" onSubmit={handleSearchSubmit}>
+      <div className="flex gap-2">
+        <div className="flex-1 relative">
+          <input
+            className="w-full px-4 py-2 pl-10 border-2 bg-white border-red-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 hover:border-red-800 transition-colors"
+            type="search"
+            placeholder={placeholder}
+            aria-label="Search"
+            onChange={handleChange}
+            value={value}
+          />
+          <i className="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <button
+          className="px-4 sm:px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium whitespace-nowrap flex items-center gap-2"
+          type="submit"
+        >
+          <i className="fa fa-search"></i>
+          <span className="hidden sm:inline">Buscar</span>
+        </button>
+      </div>
     </form>
   );
 }

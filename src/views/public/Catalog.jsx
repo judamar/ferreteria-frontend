@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import ProductCard from '../../components/ProductCard'
 import DivSelect from '../../components/DivSelect'
 import DivSearch from '../../components/DivSearch'
-import { sendRequest } from '../../functions'
+import {sendRequest} from '../../functions'
 
 const Catalog = () => {
   const [products, setProducts] = useState([])
@@ -28,7 +28,6 @@ const Catalog = () => {
     const res = await sendRequest('GET', '', apiUrl, '');
     setProducts(res.data);
   };
-  
 
   const getCategories = async () => {
     const res = await sendRequest('GET', '', '/categorias', '')
@@ -45,19 +44,31 @@ const Catalog = () => {
   }
 
   return (
-    <div className="container">
-      <h1 className="text-center">CATALOGO DE PRODUCTOS</h1>
-      <DivSearch placeholder='Buscar productos' handleChange={handleSearchChange} value={searchTerm} handleSearchSubmit={handleSearchSubmit}/>
-      <h5 className="text-left">Buscar por categoria</h5>
-      <DivSelect icon='fa-tag' value={categoria_id} required='' className='form-select' options={categories} sel='categoria' placeholder='Mostrar todo' disabled='' handleChange={(e) => {
-        setCategoria_id(e.target.value)
-        getProducts(e.target.value)
-      }}/>
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-        
+    <div className="container mx-auto px-4 mt-4">
+      <div className="flex flex-col items-center gap-4 mb-6">
+        <h1 className="title-h1">CATALOGO DE PRODUCTOS</h1>
+        <DivSearch placeholder='Buscar productos' handleChange={handleSearchChange} value={searchTerm}
+                   handleSearchSubmit={handleSearchSubmit}/>
+        <DivSelect
+          icon=''
+          value={categoria_id}
+          className='form-select w-full py-2 px-4 border-2 border-red-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 hover:border-red-800 transition-colors'
+          options={categories}
+          sel='categoria'
+          placeholder='Mostrar todo'
+          disabled=''
+          handleChange={(e) => {
+            setCategoria_id(e.target.value)
+            getProducts(e.target.value)
+          }}
+        />
+      </div>
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-10 flex justify-items-center">
+
         {products.map((product) => (
-          <div key={product.id} className="col">
-            <ProductCard product={product} />
+          <div key={product.id} className="col w-full">
+            <ProductCard product={product}/>
           </div>
         ))}
       </div>

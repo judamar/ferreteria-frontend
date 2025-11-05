@@ -3,15 +3,41 @@ import WhatsAppButton from './WhatsAppButton'
 
 const ProductCard = ({product}) => {
   return (
-    <div className="card m-2 p-1 " style={{ width: '15rem', height: '28rem' }}>
-      <img src={product.url_imagen} className="card-img-top rounded-2" alt={`Imagen del producto ${product.nombre_producto}`} style={{'height':'200px', 'width': '230px'}}/>
-      <div className="card-body">
-        <h5 className="card-title"><strong>{product.nombre_producto}</strong></h5>
-        <p className="card-text"><strong>Cantidad:</strong> {product.cantidad}</p>
-        <p className="card-text"><strong>Precio: </strong>${product.precio.toFixed(2)}</p>
-        <p className="card-text"><strong>Categoria: </strong>{product.categoria}</p>
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full group">
+      {/* Imagen */}
+      <div className="relative overflow-hidden bg-gray-100">
+        <img
+          src={product.url_imagen}
+          className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-300"
+          alt={`Imagen del producto ${product.nombre_producto}`}
+        />
+        <div className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+          ${new Intl.NumberFormat('es-CO').format(product.precio)}
+        </div>
       </div>
-      <WhatsAppButton producto={product.nombre_producto}/>
+
+      {/* Contenido */}
+      <div className="p-4 flex-1 flex flex-col">
+        <h5 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2 min-h-[3.5rem]">
+          {product.nombre_producto}
+        </h5>
+
+        <div className="space-y-2 mb-4 flex-1">
+          <p className="text-sm text-gray-600 flex items-center gap-2">
+            <i className="fa fa-box text-red-600"></i>
+            <span><strong>Cantidad:</strong> {product.cantidad}</span>
+          </p>
+          <p className="text-sm text-gray-600 flex items-center gap-2">
+            <i className="fa fa-tag text-red-600"></i>
+            <span><strong>Categoría:</strong> {product.categoria}</span>
+          </p>
+        </div>
+
+        {/* Botón WhatsApp */}
+        <div className="mt-auto">
+          <WhatsAppButton producto={product.nombre_producto}/>
+        </div>
+      </div>
     </div>
   )
 }
