@@ -49,6 +49,7 @@ const Catalog = () => {
         <h1 className="title-h1">CATALOGO DE PRODUCTOS</h1>
         <DivSearch placeholder='Buscar productos' handleChange={handleSearchChange} value={searchTerm}
                    handleSearchSubmit={handleSearchSubmit}/>
+        {/*
         <DivSelect
           icon=''
           value={categoria_id}
