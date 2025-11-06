@@ -21,14 +21,14 @@ const NavbarComponent = () => {
   const authUser = storage.get('authUser')
 
   return (
-    <nav className="bg-red-700 text-white shadow-md sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-red-700 to-red-600 text-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           <Link className="flex items-center gap-4 order-3 md:order-1" to="/">
             <img
               src={ENV.LOGO}
               alt="Acá va tu logo"
-              className="w-auto max-h-[80px]"
+              className="w-auto max-h-[60px]"
             />
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold text-white text-shadow-md order-2">
@@ -150,23 +150,23 @@ const NavbarComponent = () => {
           // VISTA USUARIO
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col md:flex-row md:items-center md:gap-6">
-              <Link to='/catalogo' className='py-2 hover:animate-pulsing transition-transform'>
+              <Link to='/catalogo' className='py-2 hover:scale-110 transition-transform duration-300'>
                 <i className="fa-solid fa-store me-2"/>
                 Catalogo
               </Link>
-              <Link to='/herramientas' className='py-2 hover:animate-pulsing transition-transform duration-300'>
+              <Link to='/herramientas' className='py-2 hover:scale-110 transition-transform duration-300'>
                 <i className="fa-solid fa-screwdriver-wrench me-2"/>
                 Herramientas
               </Link>
-              <Link to='/sugerencias' className='py-2 hover:animate-pulsing transition-transform duration-300'>
+              <Link to='/sugerencias' className='py-2 hover:scale-110 transition-transform duration-300'>
                 <i className="fa-solid fa-envelope me-2"/>
                 Sugerencias
               </Link>
-              <Link to='/acerca_de' className='py-2 hover:animate-pulsing transition-transform duration-300'>
+              <Link to='/acerca_de' className='py-2 hover:scale-110 transition-transform duration-300'>
                 <i className="fa-solid fa-info-circle me-2"/>
                 Acerca de
               </Link>
-              <Link to='/terminos_y_condiciones' className='py-2 hover:animate-pulsing transition-transform duration-300'>
+              <Link to='/terminos_y_condiciones' className='py-2 hover:scale-110 transition-transform duration-300'>
                 <i className="fa-solid fa-file-contract me-2"/>
                 Términos y condiciones
               </Link>
@@ -174,11 +174,11 @@ const NavbarComponent = () => {
 
             {!authUser ? (
               <div className="flex flex-col md:flex-row md:items-center md:gap-4 mt-4 md:mt-0">
-                <Link to='/login' className='py-2 hover:animate-pulsing transition-transform duration-300'>
+                <Link to='/login' className='py-2 hover:scale-110 transition-transform duration-300'>
                   <i className="fa-solid fa-sign-in-alt me-2"/>
                   Iniciar Sesion
                 </Link>
-                <Link to='/register' className='py-2 hover:animate-pulsing transition-transform duration-300'>
+                <Link to='/register' className='py-2 hover:scale-110 transition-transform duration-300'>
                   <i className="fa-solid fa-user-plus me-2"/>
                   Registrarse
                 </Link>
