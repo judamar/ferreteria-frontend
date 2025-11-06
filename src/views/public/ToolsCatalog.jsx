@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import ToolCard from '../../components/ToolCard'
 import DivSearch from '../../components/DivSearch'
-import { sendRequest } from '../../functions'
+import {sendRequest} from '../../functions'
 
 const ToolsCatalog = () => {
   const [tools, setTools] = useState([])
@@ -31,16 +31,20 @@ const ToolsCatalog = () => {
   }
 
   return (
-    <div className="container">
-      <h1 className="text-center">CATALOGO DE HERRAMIENTAS</h1>
-      <DivSearch placeholder='Buscar herramientas' handleChange={handleSearchChange} value={searchTerm} handleSearchSubmit={handleSearchSubmit}/>
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+    <div className="container mx-auto px-4 mt-4">
+      <div className="flex flex-col items-center gap-4 mb-6">
+        <h1 className="title-h1">Herramientas para alquiler</h1>
+        <DivSearch placeholder='Buscar herramientas' handleChange={handleSearchChange} value={searchTerm}
+                   handleSearchSubmit={handleSearchSubmit}/>
+      </div>
+      <div className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-10 flex justify-items-center">
         {tools.map((tool) => (
           <div key={tool.id} className="col">
-            <ToolCard tool={tool} />
+            <ToolCard tool={tool}/>
           </div>
         ))}
       </div>
+
     </div>
   )
 }
