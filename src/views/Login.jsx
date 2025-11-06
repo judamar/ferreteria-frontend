@@ -26,64 +26,45 @@ const Login = () => {
   }
 
   return (
-    <div className="container mx-auto p-6  flex flex-col justify-between gap-6">
-      <div className="flex flex-col lg:px-8 bg-white rounded-2xl shadow-md h-full p-6">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="title-h3">
+    <div className="container mx-auto my-auto p-6 flex flex-col items-center justify-center gap-6">
+      <div className="flex flex-col lg:px-8 w-full max-w-4xl bg-white rounded-2xl shadow-md p-6">
+        <div className="w-full">
+          <h3 className="title-h3">
             Inicia sesión en tu cuenta
-          </h2>
+          </h3>
         </div>
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-5 w-full">
           <form onSubmit={login} className="space-y-6">
             {/* Campo Cédula */}
-            <div>
-              <label htmlFor="cedula" className="block text-lg font-medium text-gray-900">
-                Cédula
-              </label>
-              <div
-                className="mt-2 flex items-center bg-white rounded-md px-3 py-1.5 outline-1 -outline-offset-1 outline-red-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-red-600">
-                <i className="icon-[material-symbols--id-card-outline] text-gray-900 text-2xl mr-2"/>
-                <input
-                  id="cedula"
-                  type="number"
-                  required
-                  value={cedula}
-                  onChange={(e) => setCedula(e.target.value)}
-                  placeholder="Ingresa tu cédula"
-                  className="block w-full bg-transparent text-black placeholder-gray-600 focus:outline-none text-lg"
-                />
-              </div>
-            </div>
+            <DivInput
+              label="Cédula"
+              id="cedula"
+              type='number'
+              icon='icon-[material-symbols--id-card-outline]'
+              value={cedula}
+              placeholder='Cédula'
+              required='required'
+              handleChange={(e) =>
+                setCedula(e.target.value)}/>
 
             {/* Campo Contraseña */}
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-lg font-medium text-gray-900">
-                  Contraseña
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((s) => !s)}
-                  className="text-lg font-semibold text-red-600 hover:text-red-500"
-                >
-                  {showPassword ? "Ocultar" : "Mostrar"}
-                </button>
-              </div>
-
-              <div
-                className="mt-2 flex items-center bg-white rounded-md px-3 py-1.5 outline-1 -outline-offset-1 outline-red-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-red-600">
-                <i className="icon-[gg--password] text-gray-900 text-2xl mr-2"/>
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Ingresa tu contraseña"
-                  className="block w-full bg-transparent text-black placeholder-gray-600 focus:outline-none text-lg"
-                />
-              </div>
-            </div>
+            <DivInput
+              label="Contraseña"
+              id="password"
+              type="password"
+              icon="icon-[gg--password]"
+              value={password}
+              placeholder='Contraseña'
+              required='required'
+              handleChange={(e) =>
+                setPassword(e.target.value)}/>
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((s) => !s)}
+              className="text-lg font-semibold text-red-600 hover:text-red-500">
+              {showPassword ? "Ocultar" : "Mostrar"}
+            </button>
 
             {/* Botón Iniciar */}
             <div>
@@ -98,7 +79,7 @@ const Login = () => {
           </form>
 
           {/* Enlaces secundarios */}
-          <p className="mt-10 text-center text-sm text-gray-600">
+          <p className="mt-3 text-center text-sm text-gray-600">
             ¿No tienes cuenta?
             <Link to="/register" className="ml-1 font-semibold text-red-600 hover:text-red-500">
               Regístrate
