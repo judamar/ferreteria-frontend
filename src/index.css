@@ -9,6 +9,10 @@
         @apply bg-gray-100 min-h-screen;
     }
 
+    #root {
+        @apply min-h-screen;
+    }
+
     .title-h1 {
         @apply text-4xl md:text-5xl font-bold text-center text-gray-800;
     }
