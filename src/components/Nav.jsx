@@ -24,7 +24,7 @@ const NavbarComponent = () => {
     <nav className="bg-gradient-to-r from-red-700 to-red-600 text-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
-          <Link className="flex items-center gap-4 order-3 md:order-1" to="/">
+          <Link className="flex items-center gap-4 order-3 xl:order-1" to="/">
             <img
               src={ENV.LOGO}
               alt="Acá va tu logo"
@@ -37,7 +37,7 @@ const NavbarComponent = () => {
           {/* Botón hamburguesa */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded hover:bg-red-800 transition-colors order-1 md:order-3"
+            className="xl:hidden p-2 rounded hover:bg-red-800 transition-colors order-1 xl:order-3"
             aria-label="Toggle navigation"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@ const NavbarComponent = () => {
         </div>
       </div>
       {/* Menú Desktop y Mobile */}
-      <div className={`${isMenuOpen ? 'block' : 'hidden'} md:block mt-4 md:mt-0 text-lg font-bold px-6 pb-2`}>
+      <div className={`${isMenuOpen ? 'block' : 'hidden'} xl:block xl-4 xl:mt-0 text-lg font-bold px-6 pb-2`}>
         {/* VISTA ADMIN */}
         {authUser && authUser.esAdmin === 1 ? (
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
