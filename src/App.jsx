@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import NavbarComponent from './components/Nav.jsx'
 import Login from './views/Login.jsx'
 import Register from './views/Register.jsx'
@@ -22,6 +22,7 @@ import About from './views/public/About.jsx'
 import TermsAndPrivacy from './views/public/T&C.jsx'
 import PublicSuggestion from './views/public/PublicSuggestion.jsx'
 import WhatsAppIn from './components/WhatsAppIn.jsx'
+import NotFound from "./views/NotFound.jsx";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
             <Route path='/admin/proveedores' element={<Providers/>}/>
             <Route path='/admin/sugerencias' element={<Sugerencias/>}/>
           </Route>
+          <Route path="*" element={<NotFound/>}/>
         </Routes>
       </BrowserRouter>
     </>
