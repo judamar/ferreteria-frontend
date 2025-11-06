@@ -56,16 +56,13 @@ const NavbarComponent = () => {
         {authUser && authUser.esAdmin === 1 ? (
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col md:flex-row md:items-center md:gap-6">
-                <span className="text-lg md:text-xl font-semibold py-2 md:py-0">
-                  {storage.get('authUser').nombre}
-                </span>
-
               {/* Dropdown Inventarios */}
               <div className="relative">
                 <button
                   onClick={() => toggleDropdown('inventarios')}
                   className="flex items-center justify-between w-full md:w-auto gap-2 py-2 hover:text-gray-200 transition-colors"
                 >
+                  <i className="icon-[lucide--boxes]"/>
                   Inventarios
                   <svg className={`w-4 h-4 transition-transform ${openDropdown === 'inventarios' ? 'rotate-180' : ''}`}
                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,18 +73,22 @@ const NavbarComponent = () => {
                   className={`${openDropdown === 'inventarios' ? 'block' : 'hidden'} md:absolute md:left-0 md:mt-2 md:w-56 md:bg-white md:rounded-md md:shadow-lg pl-4 md:pl-0`}>
                   <Link to='/admin/productos'
                         className='block px-4 py-2 md:text-gray-800 hover:bg-red-800 md:hover:bg-gray-100 rounded transition-colors'>
+                    <i className="icon-[eos-icons--products] mr-2" />
                     Productos
                   </Link>
                   <Link to='/admin/categorias'
                         className='block px-4 py-2 md:text-gray-800 hover:bg-red-800 md:hover:bg-gray-100 rounded transition-colors'>
+                    <i className="icon-[tabler--tag] mr-2" />
                     Categorias
                   </Link>
                   <Link to='/admin/herramientas'
                         className='block px-4 py-2 md:text-gray-800 hover:bg-red-800 md:hover:bg-gray-100 rounded transition-colors'>
+                    <i className="icon-[material-symbols--tools-power-drill-outline-sharp] mr-2" />
                     Herramientas
                   </Link>
                   <Link to='/admin/estados_herramientas'
                         className='block px-4 py-2 md:text-gray-800 hover:bg-red-800 md:hover:bg-gray-100 rounded transition-colors'>
+                    <i className="icon-[tabler--tag] mr-2" />
                     Estados Herramientas
                   </Link>
                 </div>
