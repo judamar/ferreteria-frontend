@@ -46,7 +46,7 @@ const Catalog = () => {
   return (
     <div className="container mx-auto px-4 mt-4">
       <div className="flex flex-col items-center gap-4 mb-6">
-        <h1 className="title-h1">CATALOGO DE PRODUCTOS</h1>
+        <h1 className="title-h1">Catálogo de productos</h1>
         <DivSearch placeholder='Buscar productos' handleChange={handleSearchChange} value={searchTerm}
                    handleSearchSubmit={handleSearchSubmit}/>
         {/*
