@@ -19,7 +19,7 @@ import InvoiceTemplate from './utils/InvoiceTemplate.jsx'
 import Catalog from './views/public/Catalog.jsx'
 import ToolsCatalog from './views/public/ToolsCatalog.jsx'
 import About from './views/public/About.jsx'
-import TermsAndPrivacy from './views/public/TYC.jsx'
+import TermsAndPrivacy from './views/public/T&C.jsx'
 import PublicSuggestion from './views/public/PublicSuggestion.jsx'
 import WhatsAppIn from './components/WhatsAppIn.jsx'
 
