@@ -11,7 +11,7 @@ const ProductCard = ({product}) => {
           className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-300"
           alt={`Imagen del producto ${product.nombre_producto}`}
         />
-        <div className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+        <div className="absolute top-2 right-2 bg-green-900 text-white px-3 py-1 rounded-full text-sm font-semibold">
           ${new Intl.NumberFormat('es-CO').format(product.precio)}
         </div>
       </div>
@@ -24,11 +24,11 @@ const ProductCard = ({product}) => {
 
         <div className="space-y-2 mb-4 flex-1">
           <p className="text-sm text-gray-600 flex items-center gap-2">
-            <i className="fa fa-box text-red-600"></i>
+            <i className="fa fa-box text-gray-600"></i>
             <span><strong>Cantidad:</strong> {product.cantidad}</span>
           </p>
           <p className="text-sm text-gray-600 flex items-center gap-2">
-            <i className="fa fa-tag text-red-600"></i>
+            <i className="fa fa-tag text-gray-600"></i>
             <span><strong>Categoría:</strong> {product.categoria}</span>
           </p>
         </div>
