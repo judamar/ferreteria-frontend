@@ -176,20 +176,21 @@ const NavbarComponent = () => {
               <div className="flex flex-col md:flex-row md:items-center md:gap-4 mt-4 md:mt-0">
                 <Link to='/login' className='py-2 hover:scale-110 transition-transform duration-300'>
                   <i className="fa-solid fa-sign-in-alt me-2"/>
-                  Iniciar Sesion
+                  Inicia sesión
                 </Link>
                 <Link to='/register' className='py-2 hover:scale-110 transition-transform duration-300'>
                   <i className="fa-solid fa-user-plus me-2"/>
-                  Registrarse
+                  Registrate
                 </Link>
               </div>
             ) : (
               <button
                 type='button'
-                className='px-4 py-2 mt-4 md:mt-0 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded transition-colors w-full md:w-auto'
+                className='px-4 py-2 mt-4 md:mt-0 bg-red-500 hover:bg-red-600 text-white font-semibold rounded transition-colors w-full md:w-auto'
                 onClick={logout}
               >
-                Salir
+                <i className="fa-solid fa-right-from-bracket me-2"/>
+                Cerrar Sesion
               </button>
             )}
           </div>
