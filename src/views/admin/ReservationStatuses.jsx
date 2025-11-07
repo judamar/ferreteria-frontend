@@ -1,6 +1,6 @@
 import React,{ useEffect, useState, useRef } from 'react'
 import DivAdd from '../../components/DivAdd.jsx'
-import DivTable from '../../components/DivTable.jsx'
+import DivTable from '../../components/TableBase.jsx'
 import DivInput from '../../components/DivInput.jsx'
 import Modal from '../../components/Modal.jsx'
 import { confirmation, sendRequest } from '../../functions.jsx'

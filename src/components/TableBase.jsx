@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DivTable = ({children, col, off, classLoad, classTable}) => {
+const TableBase = ({children, col, off, classLoad, classTable}) => {
   return (
     <div className='container mx-auto px-4 mt-3'>
       <div className={`
@@ -20,4 +20,4 @@ const DivTable = ({children, col, off, classLoad, classTable}) => {
   )
 }
 
-export default DivTable
+export default TableBase

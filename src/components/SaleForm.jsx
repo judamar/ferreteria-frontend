@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import DivInput from './DivInput.jsx'
 import DivSelect from './DivSelect.jsx'
-import DivTable from './DivTable.jsx'
+import DivTable from './TableBase.jsx'
 import { sendRequest } from '../functions.jsx'
 
 const SaleForm = (params) => {
