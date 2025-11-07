@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import DivAdd from '../../../components/DivAdd.jsx'
-import DivTable from '../../../components/DivTable.jsx'
 import DivSearch from '../../../components/DivSearch.jsx'
 import { Link } from 'react-router-dom'
 import { confirmation, sendRequest } from '../../../functions.jsx'
