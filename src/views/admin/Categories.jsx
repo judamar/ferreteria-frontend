@@ -1,6 +1,4 @@
 import React, {useEffect, useState, useRef} from 'react'
-import DivAdd from '../../components/DivAdd.jsx'
-import DivTable from '../../components/DivTable.jsx'
 import DivInput from '../../components/DivInput.jsx'
 import DivSearch from '../../components/DivSearch.jsx'
 import Modal from '../../components/Modal.jsx'
@@ -122,7 +120,7 @@ const Categories = () => {
         >
           <button
             type='button'
-            className='bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+            className='button-add'
             onClick={() => openModal(1)}>
             <i className='icon-[material-symbols--add-circle-outline] text-xl'/>
             <span className="hidden sm:inline">Añadir categoría</span>
@@ -174,53 +172,26 @@ const Categories = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-gray-800/40' onClick={closeModal}>
-          <div className='bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4' onClick={(e) => e.stopPropagation()}>
-            {/* Header */}
-            <div className='bg-red-700 text-white py-4 px-6 rounded-t-2xl flex justify-between items-center'>
-              <h3 className='text-xl font-bold'>{title}</h3>
-              <button onClick={closeModal} className='text-white hover:text-gray-200 transition-colors'>
-                <i className='icon-[material-symbols--close] text-2xl'/>
-              </button>
-            </div>
-
-            {/* Body */}
-            <div className='p-6'>
-              <div className='mb-6'>
-                <DivInput
-                  label="Nombre de la categoría"
-                  type='text'
-                  icon='icon-[material-symbols--label-outline]'
-                  value={categoria}
-                  placeholder='Nombre de la categoría'
-                  required='required'
-                  handleChange={(e) => setCategoria(e.target.value)}
-                  ref={NameInput}
-                />
-              </div>
-              <div className='flex justify-center'>
-                <button
-                  type='button'
-                  className='bg-orange-600 hover:bg-orange-700 text-white font-bold w-full py-3 px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                  onClick={save}>
-                  <i className='icon-[material-symbols--save-outline] text-xl'/>
-                  Guardar
-                </button>
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className='border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-center rounded-b-2xl'>
-              <button
-                type='button'
-                className='bg-red-600 hover:bg-red-700 text-white font-semibold w-full py-2 px-6 rounded-lg transition-colors duration-200'
-                onClick={closeModal}
-              >
-                Cerrar
-              </button>
-            </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal} title={title}>
+          <DivInput
+            label="Nombre de la categoría"
+            type="text"
+            icon="icon-[material-symbols--label-outline]"
+            value={categoria}
+            placeholder="Nombre de la categoría"
+            required="required"
+            handleChange={(e) => setCategoria(e.target.value)}
+          />
+          <div className="flex justify-center mt-6">
+            <button
+              type="button"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-bold w-full py-3 px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              onClick={save}>
+              <i className="icon-[material-symbols--save-outline] text-xl" />
+              Guardar
+            </button>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   )
