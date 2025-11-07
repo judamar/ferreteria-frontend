@@ -14,13 +14,14 @@ export default forwardRef(({
                              handleChange
                            }, ref) => {
   const input = ref ? ref : useRef()
+
   useEffect(() => {
     if (isFocused) {
       input.current.focus()
     }
   }, [input, isFocused])
-  return (
 
+  return (
     <div>
       <label htmlFor={id} className="block text-lg font-medium text-gray-900">
         {label}
