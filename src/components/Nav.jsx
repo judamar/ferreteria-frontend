@@ -78,7 +78,7 @@ const NavbarComponent = () => {
                   </Link>
                   <Link to='/admin/categorias'
                         className='block px-4 py-2 md:text-gray-800 hover:bg-red-800 md:hover:bg-gray-100 rounded transition-colors'>
-                    <i className="icon-[tabler--tag] mr-2" />
+                    <i className="icon-[material-symbols--category-outline] mr-2" />
                     Categorias
                   </Link>
                   <Link to='/admin/herramientas'
