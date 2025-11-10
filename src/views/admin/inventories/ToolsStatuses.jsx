@@ -124,6 +124,7 @@ const ToolsStatuses = () => {
             className="button-add"
             onClick={() => openModal(1)}>
             <i className="icon-[material-symbols--add-circle-outline] text-xl"/>
+            Añadir estado
           </button>
         </DivSearch>
       </div>
@@ -172,11 +173,11 @@ const ToolsStatuses = () => {
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={closeModal} title={title}>
           <DivInput
-            label="Nombre de la categoría"
+            label="Estado"
             type="text"
             icon="icon-[material-symbols--label-outline]"
             value={estado}
-            placeholder="Nombre de la categoría"
+            placeholder="Estado"
             required="required"
             handleChange={(e) => setEstado(e.target.value)}
           />
