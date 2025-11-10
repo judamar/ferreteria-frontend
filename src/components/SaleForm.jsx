@@ -1,8 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import DivInput from './DivInput.jsx'
 import DivSelect from './DivSelect.jsx'
-import DivTable from './TableBase.jsx'
 import { sendRequest } from '../functions.jsx'
+
+const styles = {
+  container: 'container mx-auto px-4 py-6',
+  title: 'text-3xl font-bold text-gray-900 mb-8 text-center',
+  card: 'bg-white rounded-xl shadow-lg border-2 border-red-600 overflow-hidden',
+  cardHeader: 'bg-red-600 text-white px-6 py-4 font-bold text-lg',
+  cardBody: 'p-6',
+  radioContainer: 'flex items-center gap-2 mb-4',
+  radioInput: 'w-4 h-4 text-red-600 focus:ring-red-500',
+  radioLabel: 'text-gray-700 font-medium',
+  button: 'font-semibold px-6 py-3 rounded-lg transition-all duration-200 shadow hover:shadow-lg',
+  buttonSuccess: 'bg-green-600 hover:bg-green-700 text-white w-full',
+  buttonDanger: 'bg-red-600 hover:bg-red-700 text-white p-2',
+  table: 'w-full border border-gray-300 rounded-lg overflow-hidden',
+  tableHeader: 'bg-gray-100 border-b-2 border-gray-300',
+  tableHeaderCell: 'py-3 px-4 text-left font-bold text-sm text-gray-700 uppercase',
+  tableCell: 'py-3 px-4 text-sm text-gray-900 border-b border-gray-200',
+  tableRow: 'hover:bg-gray-50 transition-colors',
+  sectionDivider: 'border-t-2 border-gray-300 my-6',
+  infoText: 'text-center text-gray-600 font-medium py-2',
+  totalText: 'font-bold text-lg text-green-600',
+}
 
 const SaleForm = (params) => {
   const [usuarios, setUsuarios] = useState([])
@@ -48,7 +69,7 @@ const SaleForm = (params) => {
   const calculateTotal = () => {
     let total = 0
     products_List.forEach((product) => {
-      total += product.product_price * product.quantity;
+      total += product.product_price * product.quantity
     })
     return total
   }
@@ -119,79 +140,182 @@ const SaleForm = (params) => {
   }
 
   return (
-    <div className='container-fluid'>
-      <h1 className='text-center' >CREAR ORDEN</h1>
-      <div className="row mt-5">
-        <div className="col-md-6 offset-md-3">
-          <div className="card border border-danger">
-            <div className="card-header bg-danger text-white border border-danger">
-              {params.title}
-            </div>
-            <div className="card-body">
-              <form onSubmit={save}>
-                <div className="form-check">
-                  <input className="form-check-input" type="radio" name="flexRadioDefault" value='FACTURA DE VENTA' onChange={handleChangeType}/>
-                    <label className="form-check-label" htmlFor="flexRadioDefault1">
-                      FACTURA DE VENTA
+    <div className={styles.container}>
+      <h1 className={styles.title}>Crear Orden</h1>
+
+      <div className="max-w-4xl mx-auto">
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            {params.title}
+          </div>
+
+          <div className={styles.cardBody}>
+            <form onSubmit={save}>
+              {/* Tipo de orden */}
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-gray-700 mb-3">Tipo de Orden</label>
+                <div className="space-y-2">
+                  <div className={styles.radioContainer}>
+                    <input
+                      className={styles.radioInput}
+                      type="radio"
+                      name="tipo_orden"
+                      id="factura"
+                      value='FACTURA DE VENTA'
+                      onChange={handleChangeType}
+                    />
+                    <label className={styles.radioLabel} htmlFor="factura">
+                      Factura de Venta
                     </label>
-                </div>
-                <div className="form-check">
-                  <input className="form-check-input" type="radio" name="flexRadioDefault" value='COTIZACIÓN' onChange={handleChangeType}/>
-                  <label className="form-check-label" htmlFor="flexRadioDefault2">
-                    COTIZACIÓN
-                  </label>
-                </div>
-                <DivSelect icon='fa-user' value={usuario_id} placeholder='Cliente' required={required} className='form-select' options={usuarios} sel='nombre_completo' handleChange={(e)=>setUsuario_id(e.target.value)}/>
-                <DivSelect icon='fa-tag' value={estado_id} placeholder='Estado' required={required} className='form-select' options={estados} sel='estado' handleChange={(e)=>setEstado_id(e.target.value)}/>
-                <div className="card border border-danger">
-                  <div className="card-header bg-danger text-white border border-danger">
-                    AÑADIR PRODUCTO
                   </div>
-                  <div className="card-body">
-                    <DivSelect icon='fa-hammer' value={producto_id} placeholder='Producto' required='' className='form-select' options={productos} sel='nombre_producto' sel2='precio' separator=' - $' handleChange={(e)=>setProducto_id(e.target.value)}/>
-                    <DivInput icon='fa-boxes' type='number' value={cantidad} required='' className='form-control' placeholder='Cantidad' handleChange={(e)=>setCantidad(e.target.value)}/>
-                    <button className='btn btn-success' type='button' onClick={saveDetail}>------ Añadir Producto ------</button>
+                  <div className={styles.radioContainer}>
+                    <input
+                      className={styles.radioInput}
+                      type="radio"
+                      name="tipo_orden"
+                      id="cotizacion"
+                      value='COTIZACIÓN'
+                      onChange={handleChangeType}
+                    />
+                    <label className={styles.radioLabel} htmlFor="cotizacion">
+                      Cotización
+                    </label>
                   </div>
                 </div>
-                <DivTable col='10' off='1' classLoad='' classTable='m-4'>
-                  <table className='table table-bordered'>
-                    <thead>
+              </div>
+
+              {/* Selects */}
+              <DivSelect
+                icon='fa-user'
+                label='Cliente'
+                value={usuario_id}
+                placeholder='Selecciona un cliente'
+                required={required}
+                options={usuarios}
+                sel='nombre_completo'
+                handleChange={(e) => setUsuario_id(e.target.value)}
+              />
+
+              <DivSelect
+                icon='fa-tag'
+                label='Estado'
+                value={estado_id}
+                placeholder='Selecciona un estado'
+                required={required}
+                options={estados}
+                sel='estado'
+                handleChange={(e) => setEstado_id(e.target.value)}
+              />
+
+              {/* Card para añadir producto */}
+              <div className={`${styles.card} mt-6`}>
+                <div className={styles.cardHeader}>
+                  <i className="fa-solid fa-plus-circle mr-2"></i>
+                  Añadir Producto
+                </div>
+                <div className={styles.cardBody}>
+                  <DivSelect
+                    icon='fa-hammer'
+                    label='Producto'
+                    value={producto_id}
+                    placeholder='Selecciona un producto'
+                    required=''
+                    options={productos}
+                    sel='nombre_producto'
+                    sel2='precio'
+                    separator=' - $'
+                    handleChange={(e) => setProducto_id(e.target.value)}
+                  />
+
+                  <DivInput
+                    icon='fa-boxes'
+                    label='Cantidad'
+                    type='number'
+                    value={cantidad}
+                    required=''
+                    placeholder='Cantidad'
+                    handleChange={(e) => setCantidad(e.target.value)}
+                  />
+
+                  <button
+                    className={`${styles.button} ${styles.buttonSuccess} mt-4`}
+                    type='button'
+                    onClick={saveDetail}
+                  >
+                    <i className="fa-solid fa-plus mr-2"></i>
+                    Añadir Producto
+                  </button>
+                </div>
+              </div>
+
+              {/* Tabla de productos */}
+              {products_List.length > 0 && (
+                <div className="mt-6">
+                  <div className="overflow-x-auto">
+                    <table className={styles.table}>
+                      <thead className={styles.tableHeader}>
                       <tr>
-                        <th>Cantidad</th>
-                        <th>Producto</th>
-                        <th>Precio unitario</th>
-                        <th>Precio total</th>
-                        <th>Eliminar</th>
+                        <th className={styles.tableHeaderCell}>Cantidad</th>
+                        <th className={styles.tableHeaderCell}>Producto</th>
+                        <th className={styles.tableHeaderCell}>Precio Unitario</th>
+                        <th className={styles.tableHeaderCell}>Precio Total</th>
+                        <th className={`${styles.tableHeaderCell} text-center`}>Eliminar</th>
                       </tr>
-                    </thead>
-                    <tbody className='table-group-divider'>
+                      </thead>
+                      <tbody>
                       {products_List.map((row, index) => (
-                        <tr key={index+1}>
-                          <td>{row.quantity}</td>
-                          <td>{row.product_name}</td>
-                          <td>{row.product_price}</td>
-                          <td>{row.product_price * row.quantity}</td>
-                          <td>
-                            <button className='btn btn-danger' type='button' onClick={()=>deleteFromLists(index)}>
+                        <tr key={index + 1} className={styles.tableRow}>
+                          <td className={styles.tableCell}>{row.quantity}</td>
+                          <td className={styles.tableCell}>{row.product_name}</td>
+                          <td className={`${styles.tableCell} text-right`}>$ {new Intl.NumberFormat("es-CO").format(row.product_price)}</td>
+                          <td className={`${styles.tableCell} text-right font-semibold text-green-600`}>
+                            $ {new Intl.NumberFormat("es-CO").format(row.product_price * row.quantity)}
+                          </td>
+                          <td className={`${styles.tableCell} text-center`}>
+                            <button
+                              className={`${styles.button} ${styles.buttonDanger}`}
+                              type='button'
+                              onClick={() => deleteFromLists(index)}
+                              title="Eliminar producto"
+                            >
                               <i className='fa-solid fa-trash'/>
                             </button>
                           </td>
                         </tr>
                       ))}
-                    </tbody>
-                    <tfoot>
+                      </tbody>
+                      <tfoot className="bg-gray-50">
                       <tr>
-                        <th colSpan='3'>Total</th>
-                        <th>$ {calculateTotal()}</th>
+                        <th colSpan='3' className="py-4 px-4 text-right text-sm font-bold text-gray-900 uppercase">
+                          Total
+                        </th>
+                        <th className={`py-4 px-4 text-right ${styles.totalText}`}>
+                          $ {new Intl.NumberFormat("es-CO").format(calculateTotal())}
+                        </th>
+                        <th></th>
                       </tr>
-                    </tfoot>
-                  </table>
-                  <div className='text-center'>--------------------------------------------------------------</div>
-                  <div className='text-center'>Total items: {detalle_venta.length}</div>
-                </DivTable>
-                <button className='btn btn-success mt-3' type='submit'>Crear Orden</button>
-              </form>
-            </div>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  <div className={styles.sectionDivider}></div>
+                  <div className={styles.infoText}>
+                    <i className="fa-solid fa-box mr-2"></i>
+                    Total de items: <span className="font-bold text-red-600">{detalle_venta.length}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Botón de submit */}
+              <button
+                className={`${styles.button} ${styles.buttonSuccess} mt-6`}
+                type='submit'
+                disabled={detalle_venta.length === 0}
+              >
+                <i className="fa-solid fa-check-circle mr-2"></i>
+                Crear Orden
+              </button>
+            </form>
           </div>
         </div>
       </div>
