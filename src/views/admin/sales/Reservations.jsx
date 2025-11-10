@@ -1,11 +1,11 @@
 import React,{ useEffect, useState, useRef } from 'react'
-import DivAdd from '../../components/DivAdd.jsx'
-import DivSelect from '../../components/DivSelect.jsx'
-import DivTable from '../../components/TableBase.jsx'
-import DivInput from '../../components/DivInput.jsx'
-import DivSearch from '../../components/DivSearch.jsx'
-import Modal from '../../components/Modal.jsx'
-import { confirmation, sendRequest } from '../../functions.jsx'
+import DivAdd from '../../../components/DivAdd.jsx'
+import DivSelect from '../../../components/DivSelect.jsx'
+import DivTable from '../../../components/TableBase.jsx'
+import DivInput from '../../../components/DivInput.jsx'
+import DivSearch from '../../../components/DivSearch.jsx'
+import Modal from '../../../components/Modal.jsx'
+import { confirmation, sendRequest } from '../../../functions.jsx'
 
 const Reservations = () => {
   const [reservas, setReservas] = useState([])

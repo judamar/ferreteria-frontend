@@ -1,11 +1,11 @@
 import React,{ useEffect, useState, useRef } from 'react'
-import DivAdd from '../../components/DivAdd.jsx'
-import DivTable from '../../components/TableBase.jsx'
-import DivInput from '../../components/DivInput.jsx'
-import Modal from '../../components/Modal.jsx'
-import { confirmation, sendRequest } from '../../functions.jsx'
+import DivAdd from '../../../components/DivAdd.jsx'
+import DivTable from '../../../components/TableBase.jsx'
+import DivInput from '../../../components/DivInput.jsx'
+import Modal from '../../../components/Modal.jsx'
+import { confirmation, sendRequest } from '../../../functions.jsx'
 
-const SalesStatuses = () => {
+const ReservationStatuses = () => {
   const [estados, setEstados] = useState([])
   const [id, setId] = useState('')
   const [estado, setEstado] = useState('')
@@ -27,14 +27,14 @@ const SalesStatuses = () => {
   },[])
 
   const getStatuses = async () => {
-    const apiUrl = '/estados_venta'
+    const apiUrl = '/estados_reserva'
     const res = await sendRequest('GET', '', apiUrl, '')
     setEstados(res.data)
     setClassTable('')
   }
 
   const deleteStatus = async (name , id) => {
-    confirmation(name, `/estados_venta/${id}`, '/admin/estados_ventas')
+    confirmation(name, `/estados_reserva/${id}`, '/admin/estados_reservas')
   }
 
   const clear = () => {
@@ -63,10 +63,10 @@ const SalesStatuses = () => {
     e.preventDefault()
     if (operation === 1) {
       method = 'POST'
-      url = '/estados_venta'
+      url = '/estados_reserva'
     } else {
       method = 'PUT'
-      url = `/estados_venta/${id}`
+      url = `/estados_reserva/${id}`
     }
     const res = await sendRequest(method, body, url, '', true)
     if (method === 'PUT' && res.status === 'SUCCESS') {
@@ -83,7 +83,7 @@ const SalesStatuses = () => {
 
   return (
     <div className='container-fluid'>
-      <h1 className='text-center' >ESTADOS DE VENTAS</h1>
+      <h1 className='text-center' >ESTADOS DE RESERVAS</h1>
       <DivAdd>
         <button type='button' className='btn btn-success' data-bs-toggle='modal' data-bs-target='#modalEstados' onClick={()=> openModal(1)}>
           <i className='fa-solid fa-circle-plus'/>
@@ -130,4 +130,4 @@ const SalesStatuses = () => {
   )
 }
 
-export default SalesStatuses
+export default ReservationStatuses
