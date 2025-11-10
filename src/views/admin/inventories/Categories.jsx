@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useRef} from 'react'
-import DivInput from '../../components/DivInput.jsx'
-import DivSearch from '../../components/DivSearch.jsx'
-import Modal from '../../components/Modal.jsx'
-import {confirmation, sendRequest} from '../../functions.jsx'
+import DivInput from '../../../components/DivInput.jsx'
+import DivSearch from '../../../components/DivSearch.jsx'
+import Modal from '../../../components/Modal.jsx'
+import {confirmation, sendRequest} from '../../../functions.jsx'
 
 const Categories = () => {
   const [categorias, setCategorias] = useState([])

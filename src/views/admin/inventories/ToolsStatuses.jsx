@@ -1,9 +1,9 @@
 import React,{ useEffect, useState, useRef } from 'react'
-import DivAdd from '../../components/DivAdd.jsx'
-import DivTable from '../../components/TableBase.jsx'
-import DivInput from '../../components/DivInput.jsx'
-import Modal from '../../components/Modal.jsx'
-import { confirmation, sendRequest } from '../../functions.jsx'
+import DivAdd from '../../../components/DivAdd.jsx'
+import DivTable from '../../../components/TableBase.jsx'
+import DivInput from '../../../components/DivInput.jsx'
+import Modal from '../../../components/Modal.jsx'
+import { confirmation, sendRequest } from '../../../functions.jsx'
 
 const ToolsStatuses = () => {
   const [estados, setEstados] = useState([])
