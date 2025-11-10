@@ -1,11 +1,11 @@
-import React,{ useEffect, useState, useRef } from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import DivAdd from '../../components/DivAdd.jsx'
 import DivTable from '../../components/TableBase.jsx'
 import DivSelect from '../../components/DivSelect.jsx'
 import DivInput from '../../components/DivInput.jsx'
 import DivSearch from '../../components/DivSearch.jsx'
 import Modal from '../../components/Modal.jsx'
-import { confirmation, sendRequest } from '../../functions.jsx'
+import {confirmation, sendRequest} from '../../functions.jsx'
 
 const Tools = () => {
   const [herramientas, setHerramientas] = useState([])
@@ -16,29 +16,48 @@ const Tools = () => {
   const [precio_alquiler, setPrecio_alquiler] = useState('')
   const [cantidad_disponible, setCantidad] = useState('')
   const [estados_id, setEstados_id] = useState('')
+  const [previewUrl, setPreviewUrl] = useState(null)
 
   const [estados, setEstados] = useState([])
-  
-  const [operation, setOperation] = useState('')
+
+  const [operation, setOperation] = useState(1) // 1: Agregar, 2: Editar
   const [title, setTitle] = useState('')
   const [classLoad, setClassLoad] = useState('')
   const [classTable, setClassTable] = useState('d-none')
 
   const [searchTerm, setSearchTerm] = useState('')
-  
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const NameInput = useRef()
-  const close = useRef()
+  const fileInputRef = useRef()
 
-  let method = ''
-  let url = ''
-  let body = null
-  let bodyform = {}
-  let isFormData = false
-
-  useEffect(()=>{
+  useEffect(() => {
     getHerramientas()
     getStates()
-  },[])
+  }, [])
+
+  // Listener para paste de imágenes
+  useEffect(() => {
+    const handlePaste = (e) => {
+      if (!isModalOpen) return
+
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile()
+          if (file) handleFile(file)
+          e.preventDefault()
+          break
+        }
+      }
+    }
+
+    document.addEventListener('paste', handlePaste)
+    return () => document.removeEventListener('paste', handlePaste)
+  }, [isModalOpen])
 
   const getHerramientas = async () => {
     const apiUrl = searchTerm.trim() !== '' ? `/herramientas_maquinas/search/${searchTerm.trim()}` : '/herramientas_maquinas'
@@ -48,8 +67,8 @@ const Tools = () => {
   }
 
   const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    getHerramientas();
+    event.preventDefault()
+    getHerramientas()
   }
 
   const handleSearchChange = (event) => {
@@ -57,8 +76,27 @@ const Tools = () => {
   }
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0]
+    if (file) handleFile(file)
+  }
+
+  const handleFile = (file) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen')
+      return
+    }
     setImage(file)
+
+    const reader = new FileReader()
+    reader.onloadend = () => setPreviewUrl(reader.result)
+    reader.readAsDataURL(file)
+
+    // Sincronizar input file
+    if (fileInputRef.current) {
+      const dataTransfer = new DataTransfer()
+      dataTransfer.items.add(file)
+      fileInputRef.current.files = dataTransfer.files
+    }
   }
 
   const deleteProduct = async (id) => {
@@ -67,11 +105,17 @@ const Tools = () => {
 
   const clear = () => {
     setImage(null)
+    setPreviewUrl(null)
     setNombre_articulo('')
     setDescripcion('')
     setPrecio_alquiler('')
     setCantidad('')
     setEstados_id('')
+
+    // Limpiar input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const getStates = async () => {
@@ -79,195 +123,255 @@ const Tools = () => {
     setEstados(res.data)
   }
 
-  const openModal = (op, id, n, d, p, c, e) => {
+  const openModal = (op, herramienta = null) => {
     clear()
-    setTimeout( ()=> NameInput.current.focus(), 600)
     setOperation(op)
-    setId(id)
+
     if (op === 1) {
+      // Agregar nueva herramienta
       setTitle('Agregar Herramienta')
+      setId('')
     } else if (op === 2) {
-      setTitle('Actualizar imagen')
-    } else if (op === 3) {
-      setTitle('Actualizar Herramienta')
-      setNombre_articulo(n)
-      setDescripcion(d)
-      setPrecio_alquiler(p)
-      setCantidad(c)
-    } else if (op === 4) {
-      setTitle('Cambiar estado')
-      setEstados_id(e)
+      // Editar herramienta existente
+      setTitle('Editar Herramienta')
+      setId(herramienta.id)
+      setNombre_articulo(herramienta.nombre_articulo)
+      setDescripcion(herramienta.descripcion)
+      setPrecio_alquiler(herramienta.precio_alquiler)
+      setCantidad(herramienta.cantidad_disponible)
+      setEstados_id(herramienta.estado_id)
     }
+
+    setIsModalOpen(true)
+    setTimeout(() => NameInput.current?.focus(), 600)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    clear()
   }
 
   const save = async (e) => {
     e.preventDefault()
-    const formData = new FormData()
+
+    let method = ''
+    let url = ''
+    let body = null
+    let isFormData = false
+
     if (operation === 1) {
+      // Crear nueva herramienta
       method = 'POST'
       url = '/herramientas_maquinas'
       isFormData = true
+
+      const formData = new FormData()
       formData.append('nombre_articulo', nombre_articulo)
       formData.append('descripcion', descripcion)
       formData.append('precio_alquiler', precio_alquiler)
       formData.append('cantidad_disponible', cantidad_disponible)
       formData.append('estados_herramientas_maquinas_id', estados_id)
-      formData.append('image', image)
+      if (image) formData.append('image', image)
+
+      body = formData
     } else if (operation === 2) {
-      method = 'PATCH'
-      url = `/herramientas_maquinas/${id}`
-      isFormData = true
-      formData.append('image', image)
-    } else if (operation === 3){
+      // Actualizar herramienta existente
       method = 'PUT'
       url = `/herramientas_maquinas/${id}`
-      bodyform = {
-        nombre_articulo: nombre_articulo,
-        descripcion: descripcion,
-        precio_alquiler: precio_alquiler,
-        cantidad_disponible: cantidad_disponible
-      }
-    } else if (operation === 4) {
-      method = 'PATCH'
-      url = `/herramientas_maquinas/state/${id}`
-      bodyform = {
-        estado: estados_id
-      }
-    }
-    if (operation === 3 || operation === 4) {
-      body = bodyform
-    } else {
+      isFormData = true
+
+      const formData = new FormData()
+      formData.append('nombre_articulo', nombre_articulo)
+      formData.append('descripcion', descripcion)
+      formData.append('precio_alquiler', precio_alquiler)
+      formData.append('cantidad_disponible', cantidad_disponible)
+      formData.append('estados_herramientas_maquinas_id', estados_id)
+      if (image) formData.append('image', image)
+
       body = formData
     }
-    console.log(body)
+
     const res = await sendRequest(method, body, url, '', true, isFormData)
-    if ((method === 'PUT' || method === 'PATCH') && res.status === 'SUCCESS') {
-      close.current.click()
-    }
+
     if (res.status === 'SUCCESS') {
-      clear()
+      closeModal()
       getHerramientas()
-      setTimeout(() => NameInput.current.focus(), 3000)
     }
   }
 
   return (
-    <div className='container-fluid'>
-      <h1 className='text-center' >HERRAMIENTAS</h1>
-      <DivSearch placeholder='Buscar herramientas' handleChange={handleSearchChange} value={searchTerm} handleSearchSubmit={handleSearchSubmit}/>
-      <DivAdd>
-        {/* rome-ignore lint/a11y/useButtonType: <explanation> */}
-        <button className='btn btn-success' data-bs-toggle='modal' data-bs-target='#modalHerramientas' onClick={()=> openModal(1)}>
-          <i className='fa-solid fa-circle-plus'/>
-          Añadir Herramienta - Maquina
-        </button>
-      </DivAdd>
-      <DivTable col='10' off='1' classLoad={classLoad} classTable={classTable}>
-        <table className='table table-bordered'>
-          <thead><tr><th>#</th><th>HERRAMIENTA</th><th>PRECIO/DIA</th><th>CANTIDAD</th><th>ESTADO</th><th /><th /><th /></tr><tr/></thead>
-          <tbody className='table-group-divider'>
-            {herramientas.map((row, index)=>(
-              <tr key={row.id}>
-                <td>{index+1}</td>
-                <td>{row.nombre_articulo}</td>
-                <td>{`$${row.precio_alquiler}`}</td>
-                <td>{row.cantidad_disponible}</td>
-                <td>{row.estado}</td>
-                <td>
-                  <button type='button' className='btn btn-warning' data-bs-toggle='modal' data-bs-target='#modalHerramientasUpdate' onClick={()=> openModal(3, row.id, row.nombre_articulo, row.descripcion, row.precio_alquiler, row.cantidad_disponible)}>
-                    <i className='fa-solid fa-pen-to-square'/>
-                  </button>
-                </td>
-                <td>
-                  <button type='button' className='btn btn-info' data-bs-toggle='modal' data-bs-target='#modalHerramientasImg' onClick={()=> openModal(2, row.id)}>
-                    <i className='fa-solid fa-image'/>
-                  </button>
-                </td>
-                <td>
-                  <button type='button' className='btn btn-success' data-bs-toggle='modal' data-bs-target='#modalHerramientasState' onClick={()=> openModal(4, row.id, row.nombre_articulo, row.descripcion, row.precio_alquiler, row.cantidad_disponible, row.estado_id)}>
-                    <i className='fa-solid fa-tag'/>
-                  </button>
-                </td>
-                <td>
-                  <button type='button' className='btn btn-danger' onClick={()=> deleteProduct(row.id)}>
-                    <i className='fa-solid fa-trash'/>
-                  </button>
-                </td>
+    <div className='container mx-auto px-4 py-6'>
+      <div className="mb-8 text-center">
+        <h1 className='title-h2'>
+          Herramientas
+        </h1>
+        <div className="w-24 h-1 bg-red-600 mx-auto rounded-full"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto mb-6 flex">
+        <DivSearch
+          placeholder='Buscar herramientas'
+          handleChange={handleSearchChange}
+          value={searchTerm}
+          handleSearchSubmit={handleSearchSubmit}
+        >
+          <button
+            type="button"
+            className="button-add"
+            onClick={() => openModal(1)}>
+            <i className='icon-[material-symbols--add-circle-outline] text-xl'/>
+            <span className="hidden sm:inline">Añadir</span>
+          </button>
+        </DivSearch>
+      </div>
+
+      <div className="max-w-8xl mx-auto mb-6">
+        <div className={`bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden ${classLoad}`}>
+          <div className={`overflow-auto ${classTable}`}>
+            <table className='w-full'>
+              <thead className="bg-red-600 text-white">
+              <tr>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">#</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">HERRAMIENTA</th>
+                <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">PRECIO/DIA</th>
+                <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">CANTIDAD</th>
+                <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">ESTADO</th>
+                <th className="py-4 px-6 text-center font-bold text-sm uppercase tracking-wider">ACCIONES</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </DivTable>
-      <Modal title={title} modal='modalHerramientas'>
-        <div className='modal-body'>
-          <DivInput type='text' icon='fa-wrench' value={nombre_articulo} className='form-control' placeholder='Nombre Herramienta - Maquina' required='required' ref={NameInput} handleChange={(e)=>setNombre_articulo(e.target.value)}/>
-          <DivInput type='text' icon='fa-file-lines' value={descripcion} className='form-control' placeholder='Descripcion' required='required' handleChange={(e)=>setDescripcion(e.target.value)}/>
-          <DivInput type='number' icon='fa-dollar-sign' value={precio_alquiler} className='form-control' placeholder='Precio alquiler en dias' required='required' handleChange={(e)=>setPrecio_alquiler(e.target.value)}/>
-          <DivInput type='number' icon='fa-box' value={cantidad_disponible} className='form-control' placeholder='Cantidad disponible' required='required' handleChange={(e)=>setCantidad(e.target.value)}/>
-          <DivSelect icon='fa-tag' value={estados_id} required='required' className='form-select' options={estados} sel='estado' handleChange={(e)=>setEstados_id(e.target.value)}/>
-          <form encType='multipart/form-data' className='input-group mb-3'>
-            <span className='input-group-text'>
-              <i className='fa-solid fa-image'/>
+              </thead>
+              <tbody className='divide-y divide-gray-200'>
+              {herramientas.map((row, index) => (
+                <tr key={row.id} className="hover:bg-gray-50 transition-colors duration-150">
+                  <td className="py-1.5 px-6 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
+                  <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_articulo}</td>
+                  <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{`$${new Intl.NumberFormat("es-CO").format(row.precio_alquiler)}`}</td>
+                  <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{row.cantidad_disponible}</td>
+                  <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{row.estado}</td>
+                  <td className="py-1.5 px-6 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type='button'
+                        className='bg-yellow-500 hover:bg-yellow-600 text-white p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105'
+                        onClick={() => openModal(2, row)}
+                        title="Editar">
+                        <i className='fa-solid fa-pen-to-square'/>
+                      </button>
+                      <button
+                        type='button'
+                        className='bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105'
+                        onClick={() => deleteProduct(row.id)}
+                        title="Eliminar">
+                        <i className='fa-solid fa-trash'/>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal} title={title}>
+        <form onSubmit={save} className='flex flex-col gap-2'>
+          <DivInput
+            label="Herramienta"
+            id="herramienta"
+            type='text'
+            icon='fa-wrench'
+            value={nombre_articulo}
+            placeholder='Nombre Herramienta - Maquina'
+            required
+            ref={NameInput}
+            handleChange={(e) => setNombre_articulo(e.target.value)}
+          />
+
+          <DivInput
+            label="Descripción"
+            id="descripcion"
+            type='text'
+            icon='fa-file-lines'
+            value={descripcion}
+            placeholder='Descripción'
+            required
+            handleChange={(e) => setDescripcion(e.target.value)}
+          />
+
+          <DivInput
+            label="Precio x Día"
+            id="precio"
+            type='number'
+            icon='fa-dollar-sign'
+            value={precio_alquiler}
+            placeholder='Precio alquiler en dias'
+            required
+            handleChange={(e) => setPrecio_alquiler(e.target.value)}
+          />
+
+          <DivInput
+            label="Cantidad"
+            id="cantidad"
+            type='number'
+            icon='fa-box'
+            value={cantidad_disponible}
+            placeholder='Cantidad disponible'
+            required
+            handleChange={(e) => setCantidad(e.target.value)}
+          />
+
+          <DivSelect
+            label="Estado"
+            icon='icon-[material-symbols--category-outline]'
+            name="estado_id"
+            id="estado_id"
+            value={estados_id}
+            required
+            placeholder='Selecciona un estado'
+            options={estados}
+            sel='estado'
+            handleChange={(e) => setEstados_id(e.target.value)}
+          />
+
+          <div className='flex items-center bg-white rounded-md shadow-sm overflow-hidden mb-3'>
+            <span className='px-3 py-2 flex items-center justify-center text-gray-600'>
+              <i className='icon-[lucide--image] text-lg font-bold'/>
             </span>
-            <input type="file" name="imagen" onChange={handleFileChange} required='required' className='form-control' placeholder='Imagen'/>
-          </form>
-          <div className='d-grid col-10 mx-auto'>
-            {/* rome-ignore lint/a11y/useButtonType: <explanation> */}
-            <button className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
+            <input
+              ref={fileInputRef}
+              type="file"
+              name="imagen"
+              onChange={handleFileChange}
+              accept="image/*"
+              className="flex-1 outline-1 -outline-offset-2 outline-gray-700 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-gray-700 text-gray-900 text-lg font-medium px-3 py-2 placeholder-gray-400"
+              placeholder='Imagen'
+            />
+          </div>
+
+          <p className="text-gray-500 text-base mb-3">
+            Puedes pegar una imagen con <kbd className="px-1 bg-gray-200 rounded">Ctrl</kbd>+<kbd className="px-1 bg-gray-200 rounded">V</kbd>
+          </p>
+
+          {previewUrl && (
+            <div className="mb-3">
+              <p className="text-sm text-gray-600 mb-2">Vista previa:</p>
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="max-w-full max-h-[200px] object-contain border border-gray-300 rounded-md"
+              />
+            </div>
+          )}
+
+          <div className="flex justify-center mt-6">
+            <button
+              type="submit"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-bold w-full py-3 px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              <i className="icon-[material-symbols--save-outline] text-xl"/>
+              {operation === 1 ? 'Guardar' : 'Actualizar'}
             </button>
           </div>
-        </div>
-        <div className='modal-footer'>
-          <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-        </div>
-      </Modal>
-      <Modal title={title} modal='modalHerramientasUpdate'>
-        <div className='modal-body'>
-        <DivInput type='text' icon='fa-wrench' value={nombre_articulo} className='form-control' placeholder='Nombre Herramienta - Maquina' required='required' ref={NameInput} handleChange={(e)=>setNombre_articulo(e.target.value)}/>
-          <DivInput type='text' icon='fa-file-lines' value={descripcion} className='form-control' placeholder='Descripcion' required='required' handleChange={(e)=>setDescripcion(e.target.value)}/>
-          <DivInput type='number' icon='fa-dollar-sign' value={precio_alquiler} className='form-control' placeholder='Precio alquiler en dias' required='required' handleChange={(e)=>setPrecio_alquiler(e.target.value)}/>
-          <DivInput type='number' icon='fa-box' value={cantidad_disponible} className='form-control' placeholder='Cantidad disponible' required='required' handleChange={(e)=>setCantidad(e.target.value)}/>
-          <div className='d-grid col-10 mx-auto'>
-            <button type='button' className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
-            </button>
-          </div>
-        </div>
-        <div className='modal-footer'>
-          <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-        </div>
-      </Modal>
-      <Modal title={title} modal='modalHerramientasImg'>
-        <div className='modal-body'>
-          <form encType='multipart/form-data' className='input-group mb-3'>
-            <span className='input-group-text'>
-              <i className='fa-solid fa-image'/>
-            </span>
-            <input type="file" name="imagen" onChange={handleFileChange} required='required' className='form-control' placeholder='Imagen'/>
-          </form>
-          <div className='d-grid col-10 mx-auto'>
-            <button type='button' className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
-            </button>
-          </div>
-        </div>
-        <div className='modal-footer'>
-          <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-        </div>
-      </Modal>
-      <Modal title={title} modal='modalHerramientasState'>
-        <div className='modal-body'>
-          <DivSelect icon='fa-tag' value={estados_id} required='required' className='form-select' options={estados} sel='estado' handleChange={(e)=>setEstados_id(e.target.value)}/>
-          <div className='d-grid col-10 mx-auto'>
-            <button type='button' className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
-            </button>
-          </div>
-          <div className='modal-footer'>
-            <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-          </div>
-        </div>
+        </form>
       </Modal>
     </div>
   )
