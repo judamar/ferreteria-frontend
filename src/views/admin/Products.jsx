@@ -207,7 +207,9 @@ const Products = () => {
     <div className="container mx-auto px-4 py-6">
       {/* Header */}
       <div className="mb-8 text-center">
-        <h1 className="title-h2">Productos</h1>
+        <h1 className="title-h2">
+          Productos
+        </h1>
         <div className="w-24 h-1 bg-red-600 mx-auto rounded-full"></div>
       </div>
 
@@ -224,7 +226,7 @@ const Products = () => {
             className="button-add"
             onClick={() => openModal(1)}>
             <i className="icon-[material-symbols--add-circle-outline] text-xl"/>
-            <span className="hidden sm:inline">Añadir producto</span>
+            <span className="hidden sm:inline">Añadir</span>
           </button>
         </DivSearch>
       </div>
@@ -259,7 +261,8 @@ const Products = () => {
                     <th className="py-1.5 px-6 text-right font-bold text-sm uppercase tracking-wider">Precio/u</th>
                     <th className="py-1.5 px-6 text-right font-bold text-sm uppercase tracking-wider">Total</th>
                     <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Editar</th>
-                    <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Eliminar</th>
+                    <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Eliminar
+                    </th>
                   </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -292,7 +295,7 @@ const Products = () => {
                               row.image
                             )
                           }>
-                          <i className="fa-solid fa-pen-to-square" />
+                          <i className="fa-solid fa-pen-to-square"/>
                         </button>
                       </td>
                       <td className="py-1.5 px-3 text-center">
@@ -300,7 +303,7 @@ const Products = () => {
                           type="button"
                           className="bg-red-600 hover:bg-red-700 text-white w-full p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105"
                           onClick={() => deleteProduct(row.id)}>
-                          <i className="fa-solid fa-trash" />
+                          <i className="fa-solid fa-trash"/>
                         </button>
                       </td>
                     </tr>
@@ -392,12 +395,13 @@ const Products = () => {
               ref={fileInputRef}
               onChange={handleFileChange}
               accept="image/*"
-              className="flex-1 border-0 focus:ring-0 text-gray-900 text-lg font-medium px-3 py-2 placeholder-gray-400"
+              className="flex-1 outline-1 -outline-offset-1 outline-gray-700 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-gray-700 text-gray-900 text-lg font-medium px-3 py-2 placeholder-gray-400"
               placeholder="Imagen"/>
           </form>
           <p className="text-gray-500 text-base mb-3">Puedes pegar una imagen con <kbd
             className="px-1 bg-gray-200 rounded">Ctrl</kbd>+<kbd className="px-1 bg-gray-200 rounded">V</kbd></p>
 
+          // TODO: fix image
           {previewUrl && (
             <div className="mb-3">
               <p className="text-sm text-gray-600 mb-2">Vista previa:</p>
