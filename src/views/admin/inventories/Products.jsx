@@ -4,6 +4,7 @@ import DivInput from '../../../components/DivInput.jsx';
 import DivSearch from '../../../components/DivSearch.jsx';
 import Modal from '../../../components/Modal.jsx';
 import {confirmation, sendRequest} from '../../../functions.jsx';
+import InputImg from "../../../components/InputImg.jsx";
 
 const Products = () => {
   const [productos, setProductos] = useState([]);
@@ -108,7 +109,7 @@ const Products = () => {
   };
 
   const deleteProduct = async (id) => {
-    confirmation(id, `/productos/${id}`, '/admin/productos');
+    await confirmation(id, `/productos/${id}`, '/admin/productos');
   };
 
   const clear = () => {
@@ -122,12 +123,12 @@ const Products = () => {
     setPreviewUrl(null);
   };
 
-  const openModal = (op, pr, n, m, d, p, c, ca, img) => {
+  const openModal = (op, id, n, m, d, p, c, ca, img) => {
     clear();
     setIsModalOpen(true)
     setTimeout(() => NameInput.current?.focus(), 600);
     setOperation(op);
-    setId(pr);
+    setId(id);
     if (op === 1) {
       setTitle('Agregar producto');
     } else {
@@ -138,7 +139,8 @@ const Products = () => {
       setPrecio(p);
       setCantidad(c);
       setCategoria_id(ca);
-      setPreviewUrl(img ? `/uploads/${img}` : null); // mostrar imagen actual si hay
+      console.log(img)
+      setPreviewUrl(img ? img : null); // mostrar imagen actual si hay
     }
   };
 
@@ -255,6 +257,7 @@ const Products = () => {
                   <thead className="bg-orange-600 text-white">
                   <tr>
                     <th className="py-1.5 px-6 text-left font-bold text-sm uppercase tracking-wider">#</th>
+                    <th className="py-1.5 px-6 text-center tracking-wider"/>
                     <th className="py-1.5 px-6 text-left font-bold text-sm uppercase tracking-wider">Producto</th>
                     <th className="py-1.5 px-6 text-left font-bold text-sm uppercase tracking-wider">Marca</th>
                     <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider">Cantidad</th>
@@ -269,7 +272,11 @@ const Products = () => {
                   {items.map((row, index) => (
                     <tr key={row.id} className="hover:bg-red-50 transition-colors">
                       <td className="py-1.5 px-6 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
-                      <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_producto}</td>
+                      <td className="h-[30px] w-[30px]">
+                        <img src={row.url_imagen} alt="Imagen"/>
+                      </td>
+                      <td
+                        className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_producto}</td>
                       <td className="py-1.5 px-6 whitespace-nowrap text-sm text-gray-900">{row.marca}</td>
                       <td className="py-1.5 px-6 whitespace-nowrap text-sm text-gray-900">{row.cantidad}</td>
                       <td className="py-1.5 px-6 whitespace-nowrap text-sm text-gray-900 text-right">
@@ -292,7 +299,7 @@ const Products = () => {
                               row.precio,
                               row.cantidad,
                               row.categoria_id,
-                              row.image
+                              row.url_imagen
                             )
                           }>
                           <i className="fa-solid fa-pen-to-square"/>
@@ -384,24 +391,20 @@ const Products = () => {
           />
 
           {/* Imagen */}
-          <form encType="multipart/form-data"
-                className="flex items-center bg-white rounded-md shadow-sm overflow-hidden mb-3">
-          <span className="px-3 py-2 flex items-center justify-center text-gray-600">
-            <i className="icon-[lucide--image] text-lg font-bold"/>
-          </span>
-            <input
-              type="file"
-              name="imagen"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              className="flex-1 outline-1 -outline-offset-1 outline-gray-700 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-gray-700 text-gray-900 text-lg font-medium px-3 py-2 placeholder-gray-400"
-              placeholder="Imagen"/>
-          </form>
-          <p className="text-gray-500 text-base mb-3">Puedes pegar una imagen con <kbd
-            className="px-1 bg-gray-200 rounded">Ctrl</kbd>+<kbd className="px-1 bg-gray-200 rounded">V</kbd></p>
+          <InputImg
+            label="Imagen del producto"
+            name="imagen"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            helpText="Formatos: JPG, PNG, GIF. Max: 5MB"
+          />
 
-          // TODO: fix image
+          <p className="text-gray-500 text-base mb-3">
+            Puedes pegar una imagen con <kbd className="px-1 bg-gray-200 rounded">Ctrl</kbd>+<kbd
+            className="px-1 bg-gray-200 rounded">V</kbd>
+          </p>
+
           {previewUrl && (
             <div className="mb-3">
               <p className="text-sm text-gray-600 mb-2">Vista previa:</p>
