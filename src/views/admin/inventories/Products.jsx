@@ -211,7 +211,7 @@ const Products = () => {
         <h1 className="title-h2">
           Productos
         </h1>
-        <div className="w-24 h-1 bg-red-600 mx-auto rounded-full"></div>
+        <div className="w-24 h-1 bg-red-600 mx-auto rounded-full"/>
       </div>
 
       {/* Búsqueda */}
