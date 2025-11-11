@@ -1,8 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react'
-import DivAdd from '../../../components/DivAdd.jsx'
-import DivTable from '../../../components/TableBase.jsx'
 import DivSelect from '../../../components/DivSelect.jsx'
 import DivInput from '../../../components/DivInput.jsx'
+import InputImg from '../../../components/InputImg.jsx'
 import DivSearch from '../../../components/DivSearch.jsx'
 import Modal from '../../../components/Modal.jsx'
 import {confirmation, sendRequest} from '../../../functions.jsx'
@@ -140,6 +139,7 @@ const Tools = () => {
       setPrecio_alquiler(herramienta.precio_alquiler)
       setCantidad(herramienta.cantidad_disponible)
       setEstados_id(herramienta.estado_id)
+      setPreviewUrl(herramienta.url_imagen)
     }
 
     setIsModalOpen(true)
@@ -232,6 +232,7 @@ const Tools = () => {
               <thead className="bg-red-600 text-white">
               <tr>
                 <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">#</th>
+                <th className="py-1.5 px-6 text-center tracking-wider"/>
                 <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">HERRAMIENTA</th>
                 <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">PRECIO/DIA</th>
                 <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">CANTIDAD</th>
@@ -243,6 +244,9 @@ const Tools = () => {
               {herramientas.map((row, index) => (
                 <tr key={row.id} className="hover:bg-gray-50 transition-colors duration-150">
                   <td className="py-1.5 px-6 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
+                  <td className="h-[30px] w-[30px]">
+                    <img src={row.url_imagen} alt="Imagen"/>
+                  </td>
                   <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_articulo}</td>
                   <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{`$${new Intl.NumberFormat("es-CO").format(row.precio_alquiler)}`}</td>
                   <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{row.cantidad_disponible}</td>
@@ -333,20 +337,14 @@ const Tools = () => {
             handleChange={(e) => setEstados_id(e.target.value)}
           />
 
-          <div className='flex items-center bg-white rounded-md shadow-sm overflow-hidden mb-3'>
-            <span className='px-3 py-2 flex items-center justify-center text-gray-600'>
-              <i className='icon-[lucide--image] text-lg font-bold'/>
-            </span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              name="imagen"
-              onChange={handleFileChange}
-              accept="image/*"
-              className="flex-1 outline-1 -outline-offset-2 outline-gray-700 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-gray-700 text-gray-900 text-lg font-medium px-3 py-2 placeholder-gray-400"
-              placeholder='Imagen'
-            />
-          </div>
+          <InputImg
+            label="Imagen del producto"
+            name="imagen"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            helpText="Formatos: JPG, PNG, GIF. Max: 5MB"
+          />
 
           <p className="text-gray-500 text-base mb-3">
             Puedes pegar una imagen con <kbd className="px-1 bg-gray-200 rounded">Ctrl</kbd>+<kbd className="px-1 bg-gray-200 rounded">V</kbd>
