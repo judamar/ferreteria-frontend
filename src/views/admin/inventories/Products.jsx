@@ -139,7 +139,6 @@ const Products = () => {
       setPrecio(p);
       setCantidad(c);
       setCategoria_id(ca);
-      console.log(img)
       setPreviewUrl(img ? img : null); // mostrar imagen actual si hay
     }
   };
@@ -235,7 +234,7 @@ const Products = () => {
 
       {/* Tabla */}
       <div className="max-w-8xl mx-auto mb-6">
-        <div className={`bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden ${classLoad}`}>
+        <div className={"bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"}>
           <div className={`overflow-x-auto ${classTable}`}>
             {Object.entries(
               productos.reduce((acc, prod) => {
