@@ -1,11 +1,11 @@
-import React,{ useEffect, useState, useRef } from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import DivAdd from '../../../components/DivAdd.jsx'
 import DivSelect from '../../../components/DivSelect.jsx'
 import DivTable from '../../../components/TableBase.jsx'
 import DivInput from '../../../components/DivInput.jsx'
 import DivSearch from '../../../components/DivSearch.jsx'
 import Modal from '../../../components/Modal.jsx'
-import { confirmation, sendRequest } from '../../../functions.jsx'
+import {confirmation, sendRequest} from '../../../functions.jsx'
 
 const Reservations = () => {
   const [reservas, setReservas] = useState([])
@@ -25,12 +25,12 @@ const Reservations = () => {
 
   const [operation, setOperation] = useState('')
   const [title, setTitle] = useState('')
-  const [classLoad, setClassLoad] = useState('')
   const [classTable, setClassTable] = useState('d-none')
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [cedula, setCedula] = useState('')
-  
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const NameInput = useRef(null)
   const close = useRef()
 
@@ -38,12 +38,12 @@ const Reservations = () => {
   let url = ''
   let body = {}
 
-  useEffect(()=>{
+  useEffect(() => {
     getReservations()
     getUsers()
     getStatuses()
     getHerramientas()
-  },[])
+  }, [])
 
   const getReservations = async () => {
     const apiUrl = searchTerm.trim() !== '' ? `/reservas/herramienta/${searchTerm.trim()}` : '/reservas'
@@ -76,7 +76,7 @@ const Reservations = () => {
     setSearchTerm(event.target.value)
   }
 
-  const deleteProvider = async (name, id) => {
+  const deleteReservation = async (name, id) => {
     confirmation(name, `/reservas/${id}`, '/admin/reservas')
   }
 
@@ -88,13 +88,19 @@ const Reservations = () => {
     setEstado_reserva_id('')
   }
 
-  const openModal = (op, id, hid, uid, c) => {
+  const openModal = (op, id, hid, uid, c, fecha, estado) => {
     clear()
-    setTimeout( ()=> {if (NameInput.current) {
-      NameInput.current.focus()
-    }}, 600)
+    setIsModalOpen(true)
+
+    setTimeout(() => {
+      if (NameInput.current) {
+        NameInput.current.focus()
+      }
+    }, 300)
+
     setOperation(op)
     setId(id)
+
     if (op === 1) {
       setTitle('Crear reserva')
     } else if (op === 2) {
@@ -102,6 +108,17 @@ const Reservations = () => {
       setHerramienta_maquina_id(hid)
       setUsuario_id(uid)
       setCantidad(c)
+
+      let formattedDate = ''
+      if (fecha && fecha.includes('/')) {
+        const [day, month, year] = fecha.split('/')
+        formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      } else if (fecha) {
+        formattedDate = new Date(fecha).toISOString().split('T')[0]
+      }
+
+      setFecha_fin(formattedDate)
+      setEstado_reserva_id(estado)
     } else if (op === 3) {
       setTitle('Actualizar fecha de fin')
     } else if (op === 4) {
@@ -109,163 +126,222 @@ const Reservations = () => {
     }
   }
 
+
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   const save = async (e) => {
     e.preventDefault()
+
+    let method, url, body
+
+    // format date
+    let formattedFechaFin = fecha_fin
+    if (fecha_fin && fecha_fin.includes('-')) {
+      const [year, month, day] = fecha_fin.split('-')
+      formattedFechaFin = `${day}/${month}/${year}`
+    }
+
     if (operation === 1) {
       method = 'POST'
       url = '/reservas'
       body = {
-        usuario_id: usuario_id,
-        herramienta_maquina_id: herramienta_maquina_id,
-        cantidad: cantidad,
-        fecha_fin: fecha_fin,
-        estado_reserva_id: estado_reserva_id
+        usuario_id,
+        herramienta_maquina_id,
+        cantidad,
+        fecha_fin: formattedFechaFin,
+        estado_reserva_id
       }
     } else if (operation === 2) {
       method = 'PUT'
       url = `/reservas/${id}`
       body = {
-        herramientas_maquinas_id: herramienta_maquina_id,
-        usuarios_id: usuario_id,
-        fecha_inicio: fecha_inicio
-      }
-    } else if (operation === 3) {
-      method = 'PATCH'
-      url = `/reservas/fecha/${id}`
-      body = {
-        fecha_fin: fecha_fin
-      }
-    } else if (operation === 4) {
-      method = 'PATCH'
-      url = `/reservas/estado/${id}`
-      body = {
-        estado: estado_reserva_id
+        usuario_id,
+        herramienta_maquina_id,
+        cantidad,
+        fecha_fin: formattedFechaFin,
+        estado_reserva_id
       }
     }
+
     const res = await sendRequest(method, body, url, '', true)
-    if ((method === 'PUT' || method === 'PATCH') && res.status === 'SUCCESS') {
-      close.current.click()
-    }
+
     if (res.status === 'SUCCESS') {
+      close.current?.click()
       clear()
       getReservations()
-      setTimeout( ()=> {if (NameInput.current) {
-        NameInput.current.focus()
-      }}, 3000)
+      setTimeout(() => {
+        NameInput.current?.focus()
+      }, 3000)
     }
   }
 
+
   return (
-    <div className='container-fluid'>
-      <h1 className='text-center' >RESERVAS</h1>
-      <DivSearch placeholder='Buscar reserva' handleChange={handleSearchChange} value={searchTerm} handleSearchSubmit={handleSearchSubmit}/>
-      <DivAdd>
-        <button type='button' className='btn btn-success' data-bs-toggle='modal' data-bs-target='#modalReservas' onClick={()=> openModal(1)}>
-          <i className='fa-solid fa-circle-plus'/>
-          Registrar Reserva
-        </button>
-      </DivAdd>
-      <DivTable col='10' off='1' classLoad={classLoad} classTable={classTable}>
-        <table className='table table-bordered'>
-          <thead><tr><th>#</th><th>HERRAMIENTA</th><th>CLIENTE</th><th>CEDULA</th><th>CONTACTO</th><th>CANTIDAD</th><th>FECHA INICIO</th><th>FECHA ENTREGA</th><th>DIAS FACTURADOS</th><th>$ ALQ.</th><th>$ TOTAL</th><th>ESTADO</th><th /><th /><th /><th /></tr></thead>
-          <tbody className='table-group-divider'>
-            {reservas.map((row, index)=>(
-              <tr key={row.id}>
-                <td>{index+1}</td>
-                <td>{row.nombre_articulo}</td>
-                <td>{row.nombre_completo}</td>
-                <td>{row.cedula}</td>
-                <td>{row.telefono}</td>
-                <td>{row.cantidad}</td>
-                <td>{row.fecha_inicio_format}</td>
-                <td>{row.fecha_fin_format}</td>
-                <td>{row.dias_alquiler}</td>
-                <td>{row.precio_alquiler}</td>
-                <td>{row.total}</td>
-                <td>{row.estado}</td>
-                <td>
-                  <button type='button' className='btn btn-warning' data-bs-toggle='modal' data-bs-target='#modalReservasUpdate' onClick={()=> openModal(2, row.id)}>
-                    <i className='fa-solid fa-pen-to-square'/>
-                  </button>
-                </td>
-                <td>
-                  <button type='button' className='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalReservasFechaFin' onClick={()=> openModal(3, row.id)}>
-                    <i className='fa-solid fa-calendar-day'/>
-                  </button>
-                </td>
-                <td>
-                  <button type='button' className='btn btn-success' data-bs-toggle='modal' data-bs-target='#modalReservasEstado' onClick={()=> openModal(4, row.id)}>
-                    <i className='fa-solid fa-tag'/>
-                  </button>
-                </td>
-                <td>
-                  <button type='button' className='btn btn-danger' onClick={()=> deleteProvider(row.id, row.id)}>
-                    <i className='fa-solid fa-trash'/>
-                  </button>
-                </td>
+    <div className='container mx-auto px-4 py-6'>
+      <div className="mb-8 text-center">
+        <h1 className="title-h2">
+          RESERVAS
+        </h1>
+        <div className="w-24 h-1 bg-red-600 mx-auto rounded-full"/>
+      </div>
+
+      <div className="max-w-7xl mx-auto mb-6 flex">
+        <DivSearch
+          placeholder='Buscar reserva'
+          handleChange={handleSearchChange}
+          value={searchTerm}
+          handleSearchSubmit={handleSearchSubmit}>
+          <button
+            type="button"
+            className="button-add"
+            onClick={() => openModal(1)}>
+            <i className="icon-[material-symbols--add-circle-outline] text-xl"/>
+            <span className="hidden sm:inline">Crear Reserva</span>
+          </button>
+
+        </DivSearch>
+      </div>
+
+      <div className="max-w-10xl mx-auto mb-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className={`overflow-auto ${classTable}`}>
+            <table className="w-full">
+              <thead className="bg-red-600 text-white">
+              <tr>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">#
+                </th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">HERRAMIENTA</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">CLIENTE</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">CEDULA</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">CONTACTO</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">CANTIDAD</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">F. INICIO</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">F. ENTREGA</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">DIAS FACTURADOS</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">$ ALQ.</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">$ TOTAL</th>
+                <th className="py-4 px-6 text-left font-bold text-sm uppercase tracking-wider">ESTADO</th>
+                <th className="py-4 px-6 font-bold text-sm uppercase tracking-wider text-center">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </DivTable>
-      <Modal title={title} modal='modalReservas'>
-        <div className='modal-body'>
-          <DivSelect icon='fa-user' value={usuario_id} required='required' className='form-select' placeholder='---Cliente---' options={usuarios} sel='nombre_completo' handleChange={(e)=>setUsuario_id(e.target.value)}/>
-          <DivSelect icon='fa-hammer' value={herramienta_maquina_id} required='required' className='form-select' placeholder='---Herramienta---' options={herramientas} sel='nombre_articulo' handleChange={(e)=>setHerramienta_maquina_id(e.target.value)}/>
-          <label>Fecha entrega:</label>
-          <DivInput icon='fa-calendar-day' type='date' value={fecha_fin} required='required' className='form-control' placeholder='Fecha entrega' handleChange={(e)=>setFecha_fin(e.target.value)}/>
-          <DivInput icon='fa-hashtag' type='number' value={cantidad} required='required' className='form-control' placeholder='Cantidad alquilada' handleChange={(e)=>setCantidad(e.target.value)}/>
-          <DivSelect icon='fa-tag' value={estado_reserva_id} required='required' className='form-select' placeholder='---Estado---' options={estados_reserva} sel='estado' handleChange={(e)=>setEstado_reserva_id(e.target.value)}/>
-          <div className='d-grid col-10 mx-auto'>
-            <button type='button' className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
-            </button>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+              {reservas.map((row, index) => (
+                <tr key={row.id || index} className="hover:bg-gray-200 dark:bg-gray-150">
+                  <td className="py-1.5 px-6 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_articulo}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_completo}</td>
+                  <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.cedula}</td>
+                  <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.telefono}</td>
+                  <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.cantidad}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.fecha_inicio_format}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.fecha_fin_format}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.dias_alquiler}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{new Intl.NumberFormat("es-CO").format(row.precio_alquiler)}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{new Intl.NumberFormat("es-CO").format(row.total)}</td>
+                  <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.estado}</td>
+                  <td className="py-1.5 px-6 text-center flex gap-2">
+                    <button
+                      type='button'
+                      className='bg-yellow-500 hover:bg-yellow-600 text-white w-full p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform'
+                      onClick={() => openModal(2, row.id, row.herramienta_maquina_id, row.usuario_id, row.cantidad, row.fecha_fin_format, row.estado_reserva_id)}>
+                      <i className='fa-solid fa-pen-to-square'/>
+                    </button>
+                    <button
+                      type='button'
+                      className='bg-red-600 hover:bg-red-700 text-white w-full p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105'
+                      onClick={() => deleteReservation(row.id)}>
+                      <i className='fa-solid fa-trash'/>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              </tbody>
+            </table>
           </div>
         </div>
-        <div className='modal-footer'>
-          <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-        </div>
-      </Modal> 
-      <Modal title={title} modal='modalReservasUpdate'>
-        <div className='modal-body'>
-          <DivSelect icon='fa-user' value={usuario_id} required='required' className='form-select' options={usuarios} sel='nombre_completo' handleChange={(e)=>setUsuario_id(e.target.value)}/>
-          <DivSelect icon='fa-hammer' value={herramienta_maquina_id} required='required' className='form-select' options={herramientas} sel='nombre_articulo' handleChange={(e)=>setHerramienta_maquina_id(e.target.value)}/>
-          <DivInput icon='fa-calendar-day' type='date' value={fecha_inicio} required='required' className='form-control' handleChange={(e)=>setFecha_inicio(e.target.value)}/>
-          <div className='d-grid col-10 mx-auto'>
-            <button type='button' className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal} title={title}>
+        <form onSubmit={save} className="flex flex-col gap-4">
+          <DivSelect
+            icon='icon-[lineicons--customer] text-gray-900 text-2xl'
+            label='Cliente'
+            value={usuario_id}
+            required='required'
+            placeholder='Selecciona un cliente'
+            options={usuarios}
+            sel='nombre_completo'
+            handleChange={(e) => setUsuario_id(e.target.value)}
+            ref={NameInput}
+          />
+
+          <DivSelect
+            icon='icon-[material-symbols--tools-power-drill-outline-sharp]'
+            label='Herramienta'
+            value={herramienta_maquina_id}
+            required='required'
+            placeholder='Selecciona una herramienta'
+            options={herramientas}
+            sel='nombre_articulo'
+            handleChange={(e) => setHerramienta_maquina_id(e.target.value)}
+          />
+
+          <DivInput
+            icon='icon-[fluent-mdl2--quantity]'
+            label='Cantidad'
+            type='number'
+            value={cantidad}
+            required='required'
+            placeholder='Cantidad a alquilar'
+            handleChange={(e) => setCantidad(e.target.value)}
+          />
+
+          <DivInput
+            icon='icon-[uiw--date]'
+            label='Fecha de Entrega'
+            type='date'
+            value={fecha_fin}
+            required='required'
+            placeholder='Fecha de entrega'
+            handleChange={(e) => setFecha_fin(e.target.value)}
+          />
+
+          <DivSelect
+            icon='icon-[hugeicons--sale-tag-01]'
+            label='Estado'
+            value={estado_reserva_id}
+            required='required'
+            placeholder='Selecciona un estado'
+            options={estados_reserva}
+            sel='estado'
+            handleChange={(e) => setEstado_reserva_id(e.target.value)}
+          />
+
+          <div className="flex gap-3 mt-4">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-bold w-full py-3 px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              <i className="icon-[material-symbols--save-outline] text-xl"/>
+              {operation === 1 ? 'Crear Reserva' : 'Actualizar Reserva'}
             </button>
           </div>
-        </div>
-        <div className='modal-footer'>
-          <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-        </div>
-      </Modal>
-      <Modal title={title} modal='modalReservasFechaFin'>
-        <div className='modal-body'>
-          <DivInput icon='fa-calendar-day' type='date' value={fecha_fin} required='required' className='form-control' handleChange={(e)=>setFecha_fin(e.target.value)}/>
-          <div className='d-grid col-10 mx-auto'>
-            <button type='button' className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
-            </button>
-          </div>
-        </div>
-        <div className='modal-footer'>
-          <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-        </div>
-      </Modal>
-      <Modal title={title} modal='modalReservasEstado'>
-        <div className='modal-body'>
-          <DivSelect icon='fa-tag' value={estado_reserva_id} required='required' className='form-select' options={estados_reserva} sel='estado' handleChange={(e)=>setEstado_reserva_id(e.target.value)}/>
-          <div className='d-grid col-10 mx-auto'>
-            <button type='button' className='btn btn-success' onClick={save}>
-              <i className='fa-solid fa-save'/>Guardar
-            </button>
-          </div>
-        </div>
-        <div className='modal-footer'>
-          <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' ref={close}>Cerrar</button>
-        </div>
+        </form>
       </Modal>
     </div>
   )
