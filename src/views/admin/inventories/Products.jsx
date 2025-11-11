@@ -263,8 +263,7 @@ const Products = () => {
                     <th className="py-1.5 px-6 text-right font-bold text-sm uppercase tracking-wider">Precio/u</th>
                     <th className="py-1.5 px-6 text-right font-bold text-sm uppercase tracking-wider">Total</th>
                     <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Editar</th>
-                    <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Eliminar
-                    </th>
+                    <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Eliminar</th>
                   </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">

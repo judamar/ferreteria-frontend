@@ -237,7 +237,8 @@ const Tools = () => {
                 <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">PRECIO/DIA</th>
                 <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">CANTIDAD</th>
                 <th className="py-4 px-6 text-right font-bold text-sm uppercase tracking-wider">ESTADO</th>
-                <th className="py-4 px-6 text-center font-bold text-sm uppercase tracking-wider">ACCIONES</th>
+                <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Editar</th>
+                <th className="py-1.5 px-6 text-center font-bold text-sm uppercase tracking-wider w-24">Eliminar</th>
               </tr>
               </thead>
               <tbody className='divide-y divide-gray-200'>
@@ -247,27 +248,30 @@ const Tools = () => {
                   <td className="h-[30px] w-[30px]">
                     <img src={row.url_imagen} alt="Imagen"/>
                   </td>
-                  <td className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_articulo}</td>
-                  <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{`$${new Intl.NumberFormat("es-CO").format(row.precio_alquiler)}`}</td>
-                  <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{row.cantidad_disponible}</td>
+                  <td
+                    className="py-1.5 px-6 whitespace-nowrap text-sm font-medium text-gray-900">{row.nombre_articulo}</td>
+                  <td
+                    className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{`$${new Intl.NumberFormat("es-CO").format(row.precio_alquiler)}`}</td>
+                  <td
+                    className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{row.cantidad_disponible}</td>
                   <td className="py-1.5 px-6 text-right whitespace-nowrap text-sm text-gray-900">{row.estado}</td>
-                  <td className="py-1.5 px-6 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        type='button'
-                        className='bg-yellow-500 hover:bg-yellow-600 text-white p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105'
-                        onClick={() => openModal(2, row)}
-                        title="Editar">
-                        <i className='fa-solid fa-pen-to-square'/>
-                      </button>
-                      <button
-                        type='button'
-                        className='bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105'
-                        onClick={() => deleteProduct(row.id)}
-                        title="Eliminar">
-                        <i className='fa-solid fa-trash'/>
-                      </button>
-                    </div>
+                  <td className="py-1.5 px-3 text-center">
+                    <button
+                      type='button'
+                      className='bg-yellow-500 hover:bg-yellow-600 text-white w-full p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105'
+                      onClick={() => openModal(2, row)}
+                      title="Editar">
+                      <i className='fa-solid fa-pen-to-square'/>
+                    </button>
+                  </td>
+                  <td className="py-1.5 px-3 text-center">
+                    <button
+                      type='button'
+                      className='bg-red-600 hover:bg-red-700 text-white w-full p-1.5 rounded-lg transition-all duration-200 shadow hover:shadow-lg transform hover:scale-105'
+                      onClick={() => deleteProduct(row.id)}
+                      title="Eliminar">
+                      <i className='fa-solid fa-trash'/>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -347,7 +351,8 @@ const Tools = () => {
           />
 
           <p className="text-gray-500 text-base mb-3">
-            Puedes pegar una imagen con <kbd className="px-1 bg-gray-200 rounded">Ctrl</kbd>+<kbd className="px-1 bg-gray-200 rounded">V</kbd>
+            Puedes pegar una imagen con <kbd className="px-1 bg-gray-200 rounded">Ctrl</kbd>+<kbd
+            className="px-1 bg-gray-200 rounded">V</kbd>
           </p>
 
           {previewUrl && (
