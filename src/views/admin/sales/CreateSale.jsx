@@ -1,5 +1,5 @@
 import React from 'react'
-import SaleForm from '../../../components/SaleForm'
+import SaleForm from './SaleForm.jsx'
 
 const CreateSale = () => {
 

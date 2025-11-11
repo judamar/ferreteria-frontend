@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import DivInput from './DivInput.jsx'
-import DivSelect from './DivSelect.jsx'
-import { sendRequest } from '../functions.jsx'
+import React, {useEffect, useMemo, useState} from 'react'
+import DivInput from '../../../components/DivInput.jsx'
+import DivSelect from '../../../components/DivSelect.jsx'
+import { sendRequest } from '../../../functions.jsx'
 
 const styles = {
   container: 'container mx-auto px-4 py-6',
-  title: 'text-3xl font-bold text-gray-900 mb-8 text-center',
   card: 'bg-white rounded-xl shadow-lg border-2 border-red-600 overflow-hidden',
-  cardHeader: 'bg-red-600 text-white px-6 py-4 font-bold text-lg',
-  cardBody: 'p-6',
-  radioContainer: 'flex items-center gap-2 mb-4',
+  cardHeader: 'bg-red-600 text-white px-6 py-4 font-bold text-lg flex items-center justify-center',
+  cardBody: 'px-6 py-3',
+  radioContainer: 'flex items-center',
   radioInput: 'w-4 h-4 text-red-600 focus:ring-red-500',
   radioLabel: 'text-gray-700 font-medium',
-  button: 'font-semibold px-6 py-3 rounded-lg transition-all duration-200 shadow hover:shadow-lg',
+  button: 'font-semibold px-6 py-3 rounded-lg transition-all duration-200 shadow hover:shadow-lg flex items-center justify-center',
   buttonSuccess: 'bg-green-600 hover:bg-green-700 text-white w-full',
   buttonDanger: 'bg-red-600 hover:bg-red-700 text-white p-2',
   table: 'w-full border border-gray-300 rounded-lg overflow-hidden',
@@ -66,13 +65,18 @@ const SaleForm = (params) => {
     setTipo(e.target.value)
   }
 
-  const calculateTotal = () => {
+  const calculateTotal = (() => {
     let total = 0
     products_List.forEach((product) => {
       total += product.product_price * product.quantity
     })
     return total
-  }
+  })
+
+  const selectedUser = useMemo(() => {
+    return usuarios.find((u) => u.id === usuario_id)
+  }, [usuarios, usuario_id])
+
 
   const deleteFromLists = (index) => {
     const newList = [...products_List]
@@ -141,20 +145,17 @@ const SaleForm = (params) => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Crear Orden</h1>
-
       <div className="max-w-4xl mx-auto">
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             {params.title}
           </div>
-
           <div className={styles.cardBody}>
             <form onSubmit={save}>
               {/* Tipo de orden */}
-              <div className="mb-6">
-                <label className="block text-sm font-bold text-gray-700 mb-3">Tipo de Orden</label>
-                <div className="space-y-2">
+              <div className="mb-4">
+                <label className="block text-lg font-semibold text-gray-900 mb-2">Tipo de Orden</label>
+                <div className="flex items-start gap-5">
                   <div className={styles.radioContainer}>
                     <input
                       className={styles.radioInput}
@@ -186,7 +187,7 @@ const SaleForm = (params) => {
 
               {/* Selects */}
               <DivSelect
-                icon='fa-user'
+                icon='icon-[lineicons--customer]'
                 label='Cliente'
                 value={usuario_id}
                 placeholder='Selecciona un cliente'
@@ -195,9 +196,18 @@ const SaleForm = (params) => {
                 sel='nombre_completo'
                 handleChange={(e) => setUsuario_id(e.target.value)}
               />
+              {selectedUser && (
+                <div className="mt-2 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center text-base text-gray-900">
+                    <i className="icon-[material-symbols--id-card-outline] mr-2 text-gray-900"></i>
+                    <span className="font-medium">Cédula:</span>
+                    <span className="ml-2 font-semibold">{selectedUser.cedula}</span>
+                  </div>
+                </div>
+              )}
 
               <DivSelect
-                icon='fa-tag'
+                icon='icon-[hugeicons--sale-tag-01]'
                 label='Estado'
                 value={estado_id}
                 placeholder='Selecciona un estado'
@@ -210,12 +220,12 @@ const SaleForm = (params) => {
               {/* Card para añadir producto */}
               <div className={`${styles.card} mt-6`}>
                 <div className={styles.cardHeader}>
-                  <i className="fa-solid fa-plus-circle mr-2"></i>
+                  <i className="icon-[gg--add] text-2xl font-bold mr-2"/>
                   Añadir Producto
                 </div>
                 <div className={styles.cardBody}>
                   <DivSelect
-                    icon='fa-hammer'
+                    icon='icon-[fluent-mdl2--product]'
                     label='Producto'
                     value={producto_id}
                     placeholder='Selecciona un producto'
@@ -228,7 +238,7 @@ const SaleForm = (params) => {
                   />
 
                   <DivInput
-                    icon='fa-boxes'
+                    icon='icon-[fluent-mdl2--quantity]'
                     label='Cantidad'
                     type='number'
                     value={cantidad}
@@ -242,7 +252,7 @@ const SaleForm = (params) => {
                     type='button'
                     onClick={saveDetail}
                   >
-                    <i className="fa-solid fa-plus mr-2"></i>
+                    <i className="icon-[gg--add] text-lg font-semibold mr-2"></i>
                     Añadir Producto
                   </button>
                 </div>
@@ -312,7 +322,7 @@ const SaleForm = (params) => {
                 type='submit'
                 disabled={detalle_venta.length === 0}
               >
-                <i className="fa-solid fa-check-circle mr-2"></i>
+                <i className="icon-[majesticons--check] mr-2"></i>
                 Crear Orden
               </button>
             </form>
