@@ -24,7 +24,6 @@ const Products = () => {
   // Control de interfaz
   const [operation, setOperation] = useState('');
   const [title, setTitle] = useState('');
-  const [classLoad, setClassLoad] = useState('');
   const [classTable, setClassTable] = useState('d-none');
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -149,9 +148,9 @@ const Products = () => {
 
   const save = async (e) => {
     e.preventDefault();
-    let method = '';
-    let url = '';
-    let body = null;
+    let method;
+    let url;
+    let body;
     let isFormData = false;
 
     const formData = new FormData();
@@ -181,7 +180,7 @@ const Products = () => {
         Object.entries(data).forEach(([key, value]) =>
           formData.append(key, value)
         );
-        formData.append('image', image);
+        if (image) formData.append('image', image);
         body = formData;
       } else {
         body = data;
@@ -200,9 +199,17 @@ const Products = () => {
     if (res.status === 'SUCCESS') {
       close.current.click();
       clear();
-      getProducts();
+      await getProducts();
     }
   };
+
+  const calculateTotalSales = () => {
+    let total = 0
+    productos.forEach((producto) => {
+      total += (producto.precio * producto.cantidad)
+    })
+    return new Intl.NumberFormat("es-CO").format(total)
+  }
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -317,6 +324,20 @@ const Products = () => {
                 </table>
               </React.Fragment>
             ))}
+
+            <table className="w-full">
+              <tfoot className="bg-gray-50 border-t-2 border-gray-300">
+              <tr>
+                <th colSpan='8' className="py-4 px-4 text-right text-base font-bold text-gray-900 uppercase">
+                  Total
+                </th>
+                <th className="py-4 px-4 text-base font-bold text-green-600 whitespace-nowrap">
+                  ${calculateTotalSales()}
+                </th>
+                <th className="py-4 px-4"></th>
+              </tr>
+              </tfoot>
+            </table>
           </div>
         </div>
       </div>
